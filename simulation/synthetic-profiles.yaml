@@ -1,0 +1,32 @@
+- profile_id: student-low-buffer-high-urgency
+  description: early-stage learner with low capital buffer and urgency pressure
+  constraints:
+    time: { current_level: 0.42, required_level: 0.40, trend: degrading, evidence_age_days: 5, confidence: 0.72 }
+    money: { current_level: 0.33, required_level: 0.55, trend: stable, evidence_age_days: 12, confidence: 0.76 }
+    knowledge: { current_level: 0.58, required_level: 0.65, trend: improving, evidence_age_days: 18, confidence: 0.73 }
+    risk: { current_level: 0.61, required_level: 0.70, trend: degrading, evidence_age_days: 8, confidence: 0.70 }
+    legal_exposure: { current_level: 0.67, required_level: 0.75, trend: stable, evidence_age_days: 10, confidence: 0.74 }
+    cognitive_load: { current_level: 0.47, required_level: 0.50, trend: degrading, evidence_age_days: 4, confidence: 0.80 }
+    emotional_maturity: { current_level: 0.66, required_level: 0.72, trend: stable, evidence_age_days: 3, confidence: 0.77 }
+
+- profile_id: employee-stable-income-medium-readiness
+  description: salaried operator with moderate readiness and low legal clarity variance
+  constraints:
+    time: { current_level: 0.57, required_level: 0.40, trend: stable, evidence_age_days: 6, confidence: 0.81 }
+    money: { current_level: 0.62, required_level: 0.55, trend: improving, evidence_age_days: 10, confidence: 0.83 }
+    knowledge: { current_level: 0.64, required_level: 0.65, trend: improving, evidence_age_days: 16, confidence: 0.74 }
+    risk: { current_level: 0.72, required_level: 0.70, trend: stable, evidence_age_days: 9, confidence: 0.79 }
+    legal_exposure: { current_level: 0.78, required_level: 0.75, trend: stable, evidence_age_days: 5, confidence: 0.86 }
+    cognitive_load: { current_level: 0.58, required_level: 0.50, trend: stable, evidence_age_days: 2, confidence: 0.82 }
+    emotional_maturity: { current_level: 0.74, required_level: 0.72, trend: improving, evidence_age_days: 3, confidence: 0.79 }
+
+- profile_id: founder-high-variance-high-load
+  description: founder with high opportunity volume and unstable load/risk dynamics
+  constraints:
+    time: { current_level: 0.36, required_level: 0.40, trend: degrading, evidence_age_days: 4, confidence: 0.80 }
+    money: { current_level: 0.51, required_level: 0.55, trend: degrading, evidence_age_days: 7, confidence: 0.78 }
+    knowledge: { current_level: 0.70, required_level: 0.65, trend: improving, evidence_age_days: 21, confidence: 0.71 }
+    risk: { current_level: 0.63, required_level: 0.70, trend: degrading, evidence_age_days: 6, confidence: 0.74 }
+    legal_exposure: { current_level: 0.74, required_level: 0.75, trend: stable, evidence_age_days: 8, confidence: 0.82 }
+    cognitive_load: { current_level: 0.41, required_level: 0.50, trend: degrading, evidence_age_days: 2, confidence: 0.84 }
+    emotional_maturity: { current_level: 0.69, required_level: 0.72, trend: degrading, evidence_age_days: 2, confidence: 0.76 }

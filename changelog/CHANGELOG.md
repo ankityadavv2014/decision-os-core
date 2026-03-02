@@ -99,3 +99,65 @@ Use this template for every update:
   - Rationale: log cycle-level assumption changes, failure points, and strengthened rules.
   - Impact: improves auditability and supports recursive evolution.
   - Migration Notes: continue one learning record per cycle.
+
+## [0.2.0] - 2026-03-02
+### Added
+- Artifact: `graph/canonical-decision-graph.md`
+  - Change Class: `threshold-tuning`
+  - Rationale: establish minimum universal high-impact decision sequencing graph.
+  - Impact: downstream evaluators now have canonical node/edge order for irreversible-first pathways.
+  - Migration Notes: map implementation nodes to canonical decision IDs before specialization.
+
+- Artifact: `graph/universal-decision-nodes.yaml`
+  - Change Class: `non-breaking-doc`
+  - Rationale: provide schema-aligned exemplar node instances for core irreversible decisions.
+  - Impact: reduces implementation ambiguity for constraints, blockers, and unlock definitions.
+  - Migration Notes: validate node instances against `schemas/decision-node.schema.yaml`.
+
+- Artifact: `simulation/contradiction-testing-protocol.md`
+  - Change Class: `non-breaking-doc`
+  - Rationale: define deterministic deadlock/contradiction/unsafe-unlock test process.
+  - Impact: cycle-level simulation outcomes become reproducible and auditable.
+  - Migration Notes: include required output envelope in every future simulation run.
+
+- Artifact: `simulation/synthetic-profiles.yaml`
+  - Change Class: `non-breaking-doc`
+  - Rationale: establish baseline synthetic states for contradiction testing.
+  - Impact: enables repeatable safety checks across archetypal human contexts.
+  - Migration Notes: expand profile library without changing canonical constraint semantics.
+
+- Artifact: `simulation/cycle-002-simulation-results.md`
+  - Change Class: `non-breaking-doc`
+  - Rationale: record first simulation run and contradiction findings.
+  - Impact: introduces contradiction ID traceability into evolution flow.
+  - Migration Notes: append one results artifact per cycle.
+
+- Artifact: `engine/next-best-decision-spec.md`
+  - Change Class: `threshold-tuning`
+  - Rationale: define deterministic single-node selection logic with conservative tie-breakers.
+  - Impact: next-best sequencing decisions are now rule-driven and reproducible.
+  - Migration Notes: enforce mandatory precedence rules in any runtime evaluator.
+
+- Artifact: `execution/execution-bridge-spec.md`
+  - Change Class: `non-breaking-doc`
+  - Rationale: specify non-binding handoff contract to external execution systems.
+  - Impact: preserves strict boundary between decision intelligence and execution.
+  - Migration Notes: do not introduce direct integrations in core repository.
+
+- Artifact: `governance/agent-governance.md`
+  - Change Class: `non-breaking-doc`
+  - Rationale: codify agent roles, authority limits, and required output envelope.
+  - Impact: reduces risk of agent-generated policy drift or hallucinated governance.
+  - Migration Notes: treat missing evidence references as automatic non-admissibility.
+
+- Artifact: `evolution/evolution-hardening.md`
+  - Change Class: `threshold-tuning`
+  - Rationale: add regression matrix and hardening guardrails for long-term updates.
+  - Impact: future model evolution gains explicit safety regression controls.
+  - Migration Notes: run hardening checks on every canonical change proposal.
+
+- Artifact: `learnings/2026-03-02-cycle-002-phases-2-7-baseline.md`
+  - Change Class: `non-breaking-doc`
+  - Rationale: persist cycle assumptions, failures, and strengthened rules.
+  - Impact: supports recursive improvement and audit traceability.
+  - Migration Notes: maintain one learning record per recursive cycle.

@@ -1,0 +1,140 @@
+- decision_id: establish-legal-safety-baseline
+  domain: risk
+  decision_type: legal
+  irreversibility_score: 0.62
+  prerequisites: []
+  constraints_required:
+    - category: legal_exposure
+      min_required_level: 0.75
+      confidence_min: 0.80
+      evidence_freshness_days_max: 7
+    - category: knowledge
+      min_required_level: 0.55
+      confidence_min: 0.70
+  risks:
+    - risk_id: misinterpreted-regulatory-scope
+      description: legal obligations are misunderstood at definition time
+      severity: 0.80
+      likelihood: 0.45
+      mitigation: require corroborated compliance sources
+  failure_modes:
+    - mode_id: stale-regulation-assumption
+      trigger: evidence is older than freshness thresholds
+      impact: invalid legal assumptions propagate into later nodes
+      detectability: 0.75
+  unlocks:
+    - target_decision_id: validate-core-contract-literacy
+      rationale: legal baseline is required for safe contract literacy interpretation
+    - target_decision_id: decide-major-liability-commitment
+      rationale: liability commitments require legal baseline first
+  blocked_when:
+    - condition_id: legal-level-insufficient
+      expression: legal_exposure.current_level < 0.75
+      reason: legal certainty is below safe threshold
+      block_level: hard
+  simulation_only_conditions:
+    - condition_id: legal-confidence-low
+      expression: legal_exposure.confidence < 0.80
+      reason: confidence too low for execution-path decisions
+      exit_criteria: obtain corroborated legal evidence and reach confidence 0.80
+
+- decision_id: choose-credit-exposure-policy
+  domain: credit
+  decision_type: financial
+  irreversibility_score: 0.73
+  prerequisites:
+    - prerequisite_id: validate-core-contract-literacy
+      description: core contract terms and risk transfer mechanics are understood
+      satisfied: false
+      evidence_ref: learnings/required
+  constraints_required:
+    - category: knowledge
+      min_required_level: 0.65
+      confidence_min: 0.75
+      evidence_freshness_days_max: 30
+    - category: risk
+      min_required_level: 0.70
+      confidence_min: 0.70
+      evidence_freshness_days_max: 14
+    - category: money
+      min_required_level: 0.55
+      confidence_min: 0.70
+  risks:
+    - risk_id: leverage-overextension
+      description: debt posture exceeds repayment resilience
+      severity: 0.88
+      likelihood: 0.50
+      mitigation: bind policy to approved risk-cap envelope
+  failure_modes:
+    - mode_id: optimistic-income-assumption
+      trigger: repayment model assumes unstable or cyclical inflow as guaranteed
+      impact: debt stress and downstream hard blocks
+      detectability: 0.62
+  unlocks:
+    - target_decision_id: decide-major-liability-commitment
+      rationale: liability commitments depend on explicit credit policy
+  blocked_when:
+    - condition_id: risk-level-insufficient
+      expression: risk.current_level < 0.70
+      reason: risk posture below non-negotiable minimum
+      block_level: hard
+  simulation_only_conditions:
+    - condition_id: knowledge-confidence-low
+      expression: knowledge.confidence < 0.75
+      reason: credit exposure assumptions are not adequately supported
+      exit_criteria: complete validated credit policy simulation with confidence >= 0.75
+
+- decision_id: commit-identity-linked-public-positioning
+  domain: operations
+  decision_type: identity-locking
+  irreversibility_score: 0.81
+  prerequisites:
+    - prerequisite_id: define-ownership-structure-path
+      description: durable ownership pathway has been selected
+      satisfied: false
+      evidence_ref: learnings/required
+    - prerequisite_id: approve-risk-cap-policy
+      description: exposure ceilings and downside limits are approved
+      satisfied: false
+      evidence_ref: learnings/required
+  constraints_required:
+    - category: emotional_maturity
+      min_required_level: 0.72
+      confidence_min: 0.75
+      evidence_freshness_days_max: 7
+    - category: legal_exposure
+      min_required_level: 0.70
+      confidence_min: 0.80
+      evidence_freshness_days_max: 7
+    - category: risk
+      min_required_level: 0.70
+      confidence_min: 0.75
+      evidence_freshness_days_max: 14
+  risks:
+    - risk_id: reputational-lock-in
+      description: public commitments reduce future strategy reversibility
+      severity: 0.90
+      likelihood: 0.55
+      mitigation: require scenario testing across adverse identity outcomes
+  failure_modes:
+    - mode_id: volatility-under-pressure
+      trigger: emotionally destabilized period overlaps with identity commitment timing
+      impact: persistent commitments are made under non-representative state
+      detectability: 0.58
+  unlocks:
+    - target_decision_id: launch-domain-specific-execution-plan
+      rationale: identity commitments may gate execution sequencing externally
+  blocked_when:
+    - condition_id: emotional-floor-fail
+      expression: emotional_maturity.current_level < 0.72
+      reason: identity-locking decisions require high emotional stability
+      block_level: hard
+    - condition_id: legal-clarity-fail
+      expression: legal_exposure.current_level < 0.70
+      reason: legal exposure remains unresolved
+      block_level: hard
+  simulation_only_conditions:
+    - condition_id: high-irreversibility-safety-buffer
+      expression: emotional_maturity.confidence < 0.75
+      reason: insufficient confidence for irreversible identity commitment
+      exit_criteria: maintain stable evidence and confidence >= 0.75 for at least one refresh window

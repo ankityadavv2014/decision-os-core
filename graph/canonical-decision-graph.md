@@ -1,0 +1,64 @@
+# Canonical Decision Graph (Phase 2 Baseline)
+
+## Purpose
+
+Define the minimum universal decision set and sequencing edges used by Decision OS Core.
+This graph encodes decision intelligence only; it does not provide execution actions.
+
+## Design Rules
+
+- Model only high-impact, high-irreversibility, and prerequisite-bearing decisions.
+- Keep node count minimal and reusable across student, employee, creator, and founder states.
+- Block execution when hard constraints or readiness deficits are present.
+- Prefer `learning` nodes as unlock mechanisms before irreversible commitments.
+
+## Universal Node Set
+
+Each node must validate against `schemas/decision-node.schema.yaml` when materialized as YAML instances.
+
+| decision_id | domain | decision_type | irreversibility_score | primary role |
+|---|---|---|---:|---|
+| establish-legal-safety-baseline | risk | legal | 0.62 | prevents unlawful pathways before progression |
+| build-financial-buffer-policy | assets | financial | 0.58 | reduces fragility before leveraged decisions |
+| define-income-stability-strategy | income | operational | 0.52 | stabilizes replenishment constraints |
+| validate-core-contract-literacy | learning | learning | 0.20 | reduces legal and asymmetry risk |
+| choose-credit-exposure-policy | credit | financial | 0.73 | governs leverage posture |
+| decide-major-liability-commitment | assets | legal | 0.84 | captures high lock-in obligations |
+| define-ownership-structure-path | ownership | structural | 0.78 | determines ownership topology |
+| commit-identity-linked-public-positioning | operations | identity-locking | 0.81 | constrains future optionality and reputational pathway |
+| design-operating-system-routines | operations | operational | 0.40 | supports durable execution discipline |
+| approve-risk-cap-policy | risk | structural | 0.67 | limits downside and exposure stacking |
+| authorize-capital-allocation-envelope | assets | financial | 0.69 | controls capital concentration and deployment bounds |
+| launch-domain-specific-execution-plan | operations | operational | 0.49 | final bridge node before external handoff |
+
+## Canonical Sequencing Edges
+
+`A -> B` means `A` is a prerequisite unlock for `B`.
+
+- establish-legal-safety-baseline -> validate-core-contract-literacy
+- validate-core-contract-literacy -> choose-credit-exposure-policy
+- establish-legal-safety-baseline -> decide-major-liability-commitment
+- define-income-stability-strategy -> build-financial-buffer-policy
+- build-financial-buffer-policy -> authorize-capital-allocation-envelope
+- choose-credit-exposure-policy -> decide-major-liability-commitment
+- approve-risk-cap-policy -> authorize-capital-allocation-envelope
+- define-ownership-structure-path -> commit-identity-linked-public-positioning
+- approve-risk-cap-policy -> define-ownership-structure-path
+- design-operating-system-routines -> launch-domain-specific-execution-plan
+- authorize-capital-allocation-envelope -> launch-domain-specific-execution-plan
+- decide-major-liability-commitment -> launch-domain-specific-execution-plan
+
+## Global Blocker Patterns
+
+These blocker templates must be included when instantiating node YAML:
+
+- `legal_exposure.current_level < min_required_level` -> `hard`
+- `risk.current_level < min_required_level` -> `hard`
+- `constraint_confidence < 0.60` -> at least `soft_block`
+- `irreversibility_score >= 0.80 and emotional_stability < 0.72` -> `hard`
+
+## Anti-Bloat Policy
+
+- New nodes require proof that existing nodes cannot represent the same state transition.
+- Domain specialization belongs in downstream overlays; core graph remains universal.
+- Node additions without new gating semantics are rejected as duplicate abstraction.
