@@ -1,0 +1,203 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+$id: "https://decision-os-core/schemas/decision-node.schema.yaml"
+title: DecisionNode
+description: Canonical schema for Decision OS decision nodes.
+type: object
+additionalProperties: false
+required:
+  - decision_id
+  - domain
+  - decision_type
+  - irreversibility_score
+  - prerequisites
+  - constraints_required
+  - risks
+  - failure_modes
+  - unlocks
+  - blocked_when
+  - simulation_only_conditions
+properties:
+  decision_id:
+    type: string
+    pattern: "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    minLength: 3
+    maxLength: 120
+    description: Stable, unique identifier for a decision node.
+  domain:
+    type: string
+    enum:
+      - income
+      - ownership
+      - credit
+      - assets
+      - risk
+      - learning
+      - operations
+  decision_type:
+    type: string
+    enum:
+      - learning
+      - operational
+      - financial
+      - legal
+      - structural
+      - identity-locking
+  irreversibility_score:
+    type: number
+    minimum: 0.0
+    maximum: 1.0
+  prerequisites:
+    type: array
+    minItems: 0
+    items:
+      type: object
+      additionalProperties: false
+      required:
+        - prerequisite_id
+        - description
+        - satisfied
+      properties:
+        prerequisite_id:
+          type: string
+        description:
+          type: string
+          minLength: 1
+        satisfied:
+          type: boolean
+        evidence_ref:
+          type: string
+  constraints_required:
+    type: array
+    minItems: 1
+    items:
+      type: object
+      additionalProperties: false
+      required:
+        - category
+        - min_required_level
+      properties:
+        category:
+          type: string
+          enum:
+            - time
+            - money
+            - knowledge
+            - risk
+            - legal_exposure
+            - cognitive_load
+            - emotional_maturity
+        min_required_level:
+          type: number
+          minimum: 0.0
+          maximum: 1.0
+        confidence_min:
+          type: number
+          minimum: 0.0
+          maximum: 1.0
+        evidence_freshness_days_max:
+          type: integer
+          minimum: 0
+  risks:
+    type: array
+    minItems: 1
+    items:
+      type: object
+      additionalProperties: false
+      required:
+        - risk_id
+        - description
+        - severity
+        - likelihood
+      properties:
+        risk_id:
+          type: string
+        description:
+          type: string
+        severity:
+          type: number
+          minimum: 0.0
+          maximum: 1.0
+        likelihood:
+          type: number
+          minimum: 0.0
+          maximum: 1.0
+        mitigation:
+          type: string
+  failure_modes:
+    type: array
+    minItems: 1
+    items:
+      type: object
+      additionalProperties: false
+      required:
+        - mode_id
+        - trigger
+        - impact
+      properties:
+        mode_id:
+          type: string
+        trigger:
+          type: string
+        impact:
+          type: string
+        detectability:
+          type: number
+          minimum: 0.0
+          maximum: 1.0
+  unlocks:
+    type: array
+    minItems: 0
+    items:
+      type: object
+      additionalProperties: false
+      required:
+        - target_decision_id
+        - rationale
+      properties:
+        target_decision_id:
+          type: string
+        rationale:
+          type: string
+  blocked_when:
+    type: array
+    minItems: 1
+    items:
+      type: object
+      additionalProperties: false
+      required:
+        - condition_id
+        - expression
+        - reason
+      properties:
+        condition_id:
+          type: string
+        expression:
+          type: string
+          minLength: 1
+        reason:
+          type: string
+        block_level:
+          type: string
+          enum:
+            - hard
+            - soft
+  simulation_only_conditions:
+    type: array
+    minItems: 0
+    items:
+      type: object
+      additionalProperties: false
+      required:
+        - condition_id
+        - expression
+        - reason
+      properties:
+        condition_id:
+          type: string
+        expression:
+          type: string
+          minLength: 1
+        reason:
+          type: string
+        exit_criteria:
+          type: string
