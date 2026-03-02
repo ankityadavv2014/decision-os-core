@@ -36,6 +36,20 @@ For each category, maintain:
 - `evidence_age_days` (integer)
 - `confidence` (`0.0` to `1.0`)
 
+## Default Evidence Freshness Windows
+
+Unless a decision node sets `constraints_required[].evidence_freshness_days_max`, apply these canonical defaults:
+
+- `time`: 14 days
+- `money`: 30 days
+- `knowledge`: 45 days
+- `risk`: 14 days
+- `legal_exposure`: 7 days
+- `cognitive_load`: 7 days
+- `emotional_maturity`: 7 days
+
+If a node-level freshness limit is defined, the stricter (smaller) value prevails.
+
 ## Evaluation Outcomes
 
 Constraint evaluation produces one of:
@@ -68,3 +82,4 @@ When constraints compete, apply deterministic precedence:
 - Simulation-only constraints can be bypassed only by improving evidence-backed levels, not by argument.
 - Constraint confidence below `0.60` downgrades `pass` to `soft_block`.
 - Evidence older than domain-defined freshness windows downgrades outcome one level.
+- Missing freshness override in a node must not disable freshness checks; canonical defaults still apply.

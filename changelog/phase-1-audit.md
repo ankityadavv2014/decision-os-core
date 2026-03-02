@@ -26,3 +26,9 @@ Scope: ontology, constraints, readiness, schemas, evolution, learnings
 
 - Runtime validation engine is not implemented in Phase 1; enforcement depends on downstream consumers.
 - Threshold values are initial policy baselines and require calibration from empirical learnings.
+
+## Cycle 001 Delta Audit (2026-03-02)
+
+- Gap found: freshness downgrade rule referenced "domain-defined freshness windows" without canonical defaults.
+- Resolution: added default freshness windows in `constraints/constraint-model.md`.
+- Consistency check: schema docs now explicitly state fallback behavior when `evidence_freshness_days_max` is omitted.

@@ -51,6 +51,7 @@ Every decision node must include exactly these required top-level fields:
   - `min_required_level` (number `0.0` to `1.0`)
   - `confidence_min` (number `0.0` to `1.0`, optional)
   - `evidence_freshness_days_max` (integer >= 0, optional)
+    - if omitted, evaluator must apply canonical defaults from `constraints/constraint-model.md`
 
 ### `risks`
 - Type: array of objects (min 1)

@@ -72,3 +72,30 @@ Use this template for every update:
   - Rationale: record initial cross-artifact consistency and contradiction scan.
   - Impact: provides auditable baseline for future deltas.
   - Migration Notes: rerun and append for each major phase.
+
+## [0.1.1] - 2026-03-02
+### Changed
+- Artifact: `constraints/constraint-model.md`
+  - Change Class: `threshold-tuning`
+  - Rationale: resolve undefined "domain freshness window" behavior by defining canonical defaults and strict precedence.
+  - Impact: stale-evidence handling is deterministic even when nodes omit explicit freshness overrides.
+  - Migration Notes: add `evidence_freshness_days_max` only when stricter-than-default behavior is required.
+
+- Artifact: `schemas/decision-node-schema.md`
+  - Change Class: `non-breaking-doc`
+  - Rationale: align normative schema narrative with canonical freshness fallback behavior.
+  - Impact: implementers now have explicit evaluator expectation for omitted freshness field.
+  - Migration Notes: none.
+
+- Artifact: `schemas/decision-node.schema.yaml`
+  - Change Class: `non-breaking-doc`
+  - Rationale: annotate machine-readable schema with fallback semantics for evidence freshness.
+  - Impact: reduces validator/evaluator ambiguity.
+  - Migration Notes: none.
+
+### Added
+- Artifact: `learnings/2026-03-02-cycle-001-phase1-hardening.md`
+  - Change Class: `non-breaking-doc`
+  - Rationale: log cycle-level assumption changes, failure points, and strengthened rules.
+  - Impact: improves auditability and supports recursive evolution.
+  - Migration Notes: continue one learning record per cycle.
