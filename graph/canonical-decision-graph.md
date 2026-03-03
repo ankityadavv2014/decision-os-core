@@ -37,16 +37,21 @@ Each node must validate against `schemas/decision-node.schema.yaml` when materia
 
 - validate-core-contract-literacy -> establish-legal-safety-baseline
 - validate-core-contract-literacy -> choose-credit-exposure-policy
+- establish-legal-safety-baseline -> choose-credit-exposure-policy
 - establish-legal-safety-baseline -> decide-major-liability-commitment
 - define-income-stability-strategy -> build-financial-buffer-policy
 - define-income-stability-strategy -> choose-credit-exposure-policy
+- define-income-stability-strategy -> approve-risk-cap-policy
 - build-financial-buffer-policy -> authorize-capital-allocation-envelope
+- build-financial-buffer-policy -> choose-credit-exposure-policy
 - choose-credit-exposure-policy -> decide-major-liability-commitment
+- establish-legal-safety-baseline -> approve-risk-cap-policy
 - approve-risk-cap-policy -> authorize-capital-allocation-envelope
 - approve-risk-cap-policy -> decide-major-liability-commitment
 - define-ownership-structure-path -> commit-identity-linked-public-positioning
 - approve-risk-cap-policy -> define-ownership-structure-path
 - validate-core-contract-literacy -> design-operating-system-routines
+- design-operating-system-routines -> define-income-stability-strategy
 - design-operating-system-routines -> define-ownership-structure-path
 - design-operating-system-routines -> launch-domain-specific-execution-plan
 - authorize-capital-allocation-envelope -> launch-domain-specific-execution-plan

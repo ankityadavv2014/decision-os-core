@@ -85,3 +85,25 @@
     legal_exposure: { current_level: 0.69, required_level: 0.75, trend: degrading, evidence_age_days: 6, confidence: 0.80 }
     cognitive_load: { current_level: 0.43, required_level: 0.50, trend: degrading, evidence_age_days: 2, confidence: 0.84 }
     emotional_maturity: { current_level: 0.67, required_level: 0.72, trend: degrading, evidence_age_days: 2, confidence: 0.78 }
+
+- profile_id: compliance-strong-time-fragile
+  description: compliant and financially stable state with critical time scarcity
+  constraints:
+    time: { current_level: 0.14, required_level: 0.40, trend: degrading, evidence_age_days: 2, confidence: 0.86 }
+    money: { current_level: 0.74, required_level: 0.55, trend: stable, evidence_age_days: 7, confidence: 0.85 }
+    knowledge: { current_level: 0.69, required_level: 0.65, trend: stable, evidence_age_days: 10, confidence: 0.78 }
+    risk: { current_level: 0.73, required_level: 0.70, trend: stable, evidence_age_days: 5, confidence: 0.80 }
+    legal_exposure: { current_level: 0.80, required_level: 0.75, trend: stable, evidence_age_days: 3, confidence: 0.88 }
+    cognitive_load: { current_level: 0.53, required_level: 0.50, trend: stable, evidence_age_days: 2, confidence: 0.83 }
+    emotional_maturity: { current_level: 0.73, required_level: 0.72, trend: stable, evidence_age_days: 2, confidence: 0.80 }
+
+- profile_id: recovery-mode-legal-risk-low
+  description: recovering state with depleted legal/risk confidence and constrained optionality
+  constraints:
+    time: { current_level: 0.46, required_level: 0.40, trend: improving, evidence_age_days: 8, confidence: 0.73 }
+    money: { current_level: 0.48, required_level: 0.55, trend: improving, evidence_age_days: 11, confidence: 0.75 }
+    knowledge: { current_level: 0.57, required_level: 0.65, trend: improving, evidence_age_days: 16, confidence: 0.72 }
+    risk: { current_level: 0.42, required_level: 0.70, trend: improving, evidence_age_days: 6, confidence: 0.70 }
+    legal_exposure: { current_level: 0.51, required_level: 0.75, trend: improving, evidence_age_days: 7, confidence: 0.71 }
+    cognitive_load: { current_level: 0.51, required_level: 0.50, trend: stable, evidence_age_days: 3, confidence: 0.80 }
+    emotional_maturity: { current_level: 0.64, required_level: 0.72, trend: improving, evidence_age_days: 3, confidence: 0.76 }

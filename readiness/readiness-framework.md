@@ -40,6 +40,16 @@ Execution thresholds by `decision_type`:
 
 `irreversibility_score >= 0.80` applies an additional `+0.08` requirement to weighted average and a mandatory emotional stability floor of `0.72`.
 
+Irreversibility gradient guardrails:
+- `irreversibility_score >= 0.75` additionally requires:
+  - `compliance_capacity >= 0.72`
+  - `risk_tolerance >= 0.70`
+  - `knowledge_readiness >= 0.65`
+  - at least 5 of 6 readiness dimensions meeting `(min_dimension_floor + 0.03)`
+- low-irreversibility learning/operational nodes (`<= 0.40`) use non-excessive readiness profile:
+  - `learning`: min floor `0.28`, weighted average min `0.42`
+  - `operational`: min floor `0.45`, weighted average min `0.58`
+
 ## Weighting Model
 
 Default dimension weights (unless overridden by protocol-approved profile):
@@ -60,6 +70,7 @@ Evaluate in order:
 3. Check per-dimension minimum floor.
 4. Check weighted average threshold.
 5. Apply decision-type extra gate.
+6. Apply irreversibility gradient guardrails when applicable.
 
 Output:
 - `learn-only` when any threshold is not met, evidence is stale, or confidence is insufficient.

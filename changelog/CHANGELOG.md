@@ -284,3 +284,90 @@ Use this template for every update:
   - Rationale: provide structured cycle stability rating and expansion recommendation.
   - Impact: creates explicit go/no-go signal for next cycle scope.
   - Migration Notes: refresh stability rating every cycle.
+
+## [0.4.0] - 2026-03-02
+### Changed
+- Artifact: `graph/canonical-decision-graph.md`
+  - Change Class: `threshold-tuning`
+  - Rationale: align sequencing edges with materialized node prerequisite chains for strict traversal integrity.
+  - Impact: prerequisite bypass paths are eliminated for current node pack.
+  - Migration Notes: run traversal audit whenever node prerequisites are edited.
+
+- Artifact: `graph/universal-decision-nodes.yaml`
+  - Change Class: `threshold-tuning`
+  - Rationale: patch root-learning deadlock by shifting low-knowledge gate from hard-block to simulation-only.
+  - Impact: null NBA outputs are removed for tested profiles while preserving safety floor at critically low knowledge.
+  - Migration Notes: preserve simulation-first entry for low-knowledge states.
+
+- Artifact: `readiness/readiness-framework.md`
+  - Change Class: `threshold-tuning`
+  - Rationale: enforce irreversibility gradient requirements for high-lock decisions and reduce over-gating on low-lock nodes.
+  - Impact: readiness calibration better matches decision lock-in level.
+  - Migration Notes: apply gradient guardrails in evaluator after base decision-type checks.
+
+- Artifact: `simulation/synthetic-profiles.yaml`
+  - Change Class: `non-breaking-doc`
+  - Rationale: expand certification profile set to 10 for stronger determinism and deadlock testing.
+  - Impact: broader edge-case coverage in simulation cycles.
+  - Migration Notes: maintain at least 10 profiles for certification pass.
+
+### Added
+- Artifact: `constraints/constraint-state-transition-model.md`
+  - Change Class: `non-breaking-doc`
+  - Rationale: formalize bounded constraint transition equations and invariants.
+  - Impact: transition logic is auditable and deterministic.
+  - Migration Notes: update transition model before introducing any new constraint dynamics.
+
+- Artifact: `simulation/cycle-004-graph-traversal-audit.md`
+  - Change Class: `non-breaking-doc`
+  - Rationale: record full traversal integrity checks for cycle certification.
+  - Impact: provides explicit evidence of no cycles/backward unlocks/bypass paths.
+  - Migration Notes: rerun after any graph edge change.
+
+- Artifact: `simulation/cycle-004-nba-determinism.md`
+  - Change Class: `non-breaking-doc`
+  - Rationale: certify deterministic next-best output across repeated runs.
+  - Impact: confirms no order-dependent nondeterminism in current selection logic.
+  - Migration Notes: include dual-run deterministic check each certification cycle.
+
+- Artifact: `simulation/cycle-004-constraint-state-transition-audit.md`
+  - Change Class: `non-breaking-doc`
+  - Rationale: verify per-node consume/replenish/compound consistency against transition model.
+  - Impact: improves confidence in constraint semantics continuity.
+  - Migration Notes: refresh per-node mapping when node pack changes.
+
+- Artifact: `simulation/cycle-004-irreversibility-gradient-validation.md`
+  - Change Class: `non-breaking-doc`
+  - Rationale: document readiness-gradient validation and threshold alignment updates.
+  - Impact: ties threshold rationale explicitly to irreversibility class.
+  - Migration Notes: keep high-lock multidimensional checks active.
+
+- Artifact: `simulation/cycle-004-deadlock-detection.md`
+  - Change Class: `non-breaking-doc`
+  - Rationale: document deadlock detection, classification, and in-cycle patch evidence.
+  - Impact: establishes explicit null-output remediation trail.
+  - Migration Notes: treat null NBA outputs as defects unless formally justified pause states.
+
+- Artifact: `reports/stability-cycle-004.md`
+  - Change Class: `non-breaking-doc`
+  - Rationale: publish cycle-level stability certification metrics and verdict.
+  - Impact: provides centralized control-health snapshot for governance review.
+  - Migration Notes: produce one stability report per certification cycle.
+
+- Artifact: `learnings/2026-03-02-cycle-004-stability-certification.md`
+  - Change Class: `non-breaking-doc`
+  - Rationale: capture cycle assumptions, anomalies, and rule-level outcomes.
+  - Impact: preserves recursive learning continuity for future hardening passes.
+  - Migration Notes: maintain one certification learning record per cycle.
+
+- Artifact: `schemas/cycle-004-schema-validation-report.md`
+  - Change Class: `non-breaking-doc`
+  - Rationale: record cycle-004 schema conformance for current node pack.
+  - Impact: provides certification evidence that node artifacts remain schema-valid.
+  - Migration Notes: add one schema report per certification cycle.
+
+- Artifact: `evolution/cycle-004-evolution-hardening-review.md`
+  - Change Class: `non-breaking-doc`
+  - Rationale: document explicit cycle-level verification of modification, deprecation, and contradiction workflow readiness.
+  - Impact: confirms evolution governance remains certifiable without additional protocol drift.
+  - Migration Notes: continue one hardening review record per certification cycle.
