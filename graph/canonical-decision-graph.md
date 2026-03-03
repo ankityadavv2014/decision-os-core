@@ -44,6 +44,7 @@ Each node must validate against `schemas/decision-node.schema.yaml` when materia
 - define-income-stability-strategy -> approve-risk-cap-policy
 - build-financial-buffer-policy -> authorize-capital-allocation-envelope
 - build-financial-buffer-policy -> choose-credit-exposure-policy
+- authorize-capital-allocation-envelope -> decide-major-liability-commitment
 - choose-credit-exposure-policy -> decide-major-liability-commitment
 - establish-legal-safety-baseline -> approve-risk-cap-policy
 - approve-risk-cap-policy -> authorize-capital-allocation-envelope

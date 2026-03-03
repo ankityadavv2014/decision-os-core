@@ -515,3 +515,48 @@ Use this template for every update:
   - Rationale: record assumptions, fixes, and measured outcomes from drift pass.
   - Impact: preserves traceable learning continuity.
   - Migration Notes: maintain one learning file per cycle.
+
+## [0.7.0] - 2026-03-02
+### Changed
+- Artifact: `graph/universal-decision-nodes.yaml`
+  - Change Class: `threshold-tuning`
+  - Rationale: materialize high-leverage canonical nodes and calibrate relief-path hard blocks after stop-condition trigger.
+  - Impact: expansion depth increased while maintaining drift and determinism gates.
+  - Migration Notes: keep simulation-first gates for recoverable high-friction states.
+
+- Artifact: `graph/canonical-decision-graph.md`
+  - Change Class: `threshold-tuning`
+  - Rationale: align edge set with newly materialized prerequisite dependency chain.
+  - Impact: prerequisite path integrity remains exact for expanded node set.
+  - Migration Notes: re-run traversal audit after any edge modification.
+
+### Added
+- Artifact: `simulation/cycle-007-traversal-audit.md`
+  - Change Class: `non-breaking-doc`
+  - Rationale: record traversal gate outcomes for autonomous expansion cycle.
+  - Impact: auditable proof of invariant preservation.
+  - Migration Notes: one traversal report per expansion cycle.
+
+- Artifact: `simulation/cycle-007-determinism-regression.md`
+  - Change Class: `non-breaking-doc`
+  - Rationale: verify deterministic selection stability after expansion.
+  - Impact: confirms no nondeterminism introduced.
+  - Migration Notes: keep shuffled-order check in each cycle.
+
+- Artifact: `simulation/cycle-007-forward-projection.md`
+  - Change Class: `non-breaking-doc`
+  - Rationale: capture drift metrics after expansion and hardening replay.
+  - Impact: demonstrates threshold compliance (`risk <=1/5`, `loop <=1/5`, `null=0`).
+  - Migration Notes: preserve same profile set for comparability.
+
+- Artifact: `simulation/cycle-007-stop-and-hardening.md`
+  - Change Class: `non-breaking-doc`
+  - Rationale: document stop-condition trigger, root cause, and restoration actions.
+  - Impact: preserves safety-governed autonomous operation trail.
+  - Migration Notes: create whenever autonomous cycle enters stop state.
+
+- Artifact: `learnings/2026-03-02-cycle-007-autonomous-expansion.md`
+  - Change Class: `non-breaking-doc`
+  - Rationale: log node additions, gate outcomes, and in-cycle hardening event.
+  - Impact: maintains recursive learning continuity.
+  - Migration Notes: one learning record per cycle.

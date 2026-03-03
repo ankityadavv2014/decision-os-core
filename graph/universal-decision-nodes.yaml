@@ -355,14 +355,22 @@
       rationale: structural design must inherit risk boundary policy
   blocked_when:
     - condition_id: legal-floor-fail
-      expression: legal_exposure.current_level < 0.72
-      reason: legal certainty insufficient for durable risk policy
+      expression: legal_exposure.current_level < 0.55
+      reason: legal certainty is critically low for risk-cap progression
       block_level: hard
     - condition_id: risk-floor-fail
-      expression: risk.current_level < 0.72
-      reason: risk signal quality is below cap-setting threshold
+      expression: risk.current_level < 0.55
+      reason: risk signal quality is critically low for risk-cap progression
       block_level: hard
   simulation_only_conditions:
+    - condition_id: legal-risk-cap-low
+      expression: legal_exposure.current_level < 0.72
+      reason: risk-cap policy remains simulation-only until legal floor is met
+      exit_criteria: raise legal_exposure current level to at least 0.72
+    - condition_id: risk-risk-cap-low
+      expression: risk.current_level < 0.72
+      reason: risk-cap policy remains simulation-only until risk floor is met
+      exit_criteria: raise risk current level to at least 0.72
     - condition_id: risk-confidence-low
       expression: risk.confidence < 0.75
       reason: risk evidence confidence too low for binding cap policy
@@ -422,3 +430,186 @@
       expression: emotional_maturity.confidence < 0.70
       reason: emotional evidence confidence insufficient for durable routine commitments
       exit_criteria: stabilize emotional evidence confidence at >= 0.70
+
+- decision_id: authorize-capital-allocation-envelope
+  domain: assets
+  decision_type: financial
+  irreversibility_score: 0.69
+  prerequisites:
+    - prerequisite_id: build-financial-buffer-policy
+      description: resilient buffer policy is in place before capital concentration
+      satisfied: false
+      evidence_ref: learnings/required
+    - prerequisite_id: approve-risk-cap-policy
+      description: risk-cap policy is approved before capital allocation
+      satisfied: false
+      evidence_ref: learnings/required
+  constraints_required:
+    - category: money
+      min_required_level: 0.62
+      confidence_min: 0.78
+      evidence_freshness_days_max: 30
+    - category: risk
+      min_required_level: 0.72
+      confidence_min: 0.75
+      evidence_freshness_days_max: 14
+    - category: legal_exposure
+      min_required_level: 0.70
+      confidence_min: 0.80
+      evidence_freshness_days_max: 7
+  risks:
+    - risk_id: concentration-overshoot
+      description: capital concentration exceeds policy guardrails
+      severity: 0.86
+      likelihood: 0.49
+      mitigation: enforce allocation envelope against approved risk cap
+  failure_modes:
+    - mode_id: policy-envelope-mismatch
+      trigger: allocation envelope diverges from cap policy assumptions
+      impact: hidden downside accumulation and delayed risk visibility
+      detectability: 0.62
+  unlocks:
+    - target_decision_id: decide-major-liability-commitment
+      rationale: major liabilities require capital envelope viability
+    - target_decision_id: launch-domain-specific-execution-plan
+      rationale: execution launch requires bounded capital deployment
+  blocked_when:
+    - condition_id: risk-cap-not-approved
+      expression: risk.current_level < 0.72
+      reason: risk posture is insufficient for allocation authorization
+      block_level: hard
+    - condition_id: legal-allocation-floor-fail
+      expression: legal_exposure.current_level < 0.70
+      reason: legal exposure is unresolved for capital allocation
+      block_level: hard
+  simulation_only_conditions:
+    - condition_id: money-confidence-low
+      expression: money.confidence < 0.78
+      reason: capital evidence confidence is insufficient for allocation authorization
+      exit_criteria: raise financial confidence to 0.78
+
+- decision_id: define-ownership-structure-path
+  domain: ownership
+  decision_type: structural
+  irreversibility_score: 0.78
+  prerequisites:
+    - prerequisite_id: approve-risk-cap-policy
+      description: risk-cap policy must govern structural ownership choices
+      satisfied: false
+      evidence_ref: learnings/required
+    - prerequisite_id: design-operating-system-routines
+      description: operational routines must stabilize before durable ownership structure
+      satisfied: false
+      evidence_ref: learnings/required
+    - prerequisite_id: establish-legal-safety-baseline
+      description: legal baseline must be established for ownership path definition
+      satisfied: false
+      evidence_ref: learnings/required
+  constraints_required:
+    - category: legal_exposure
+      min_required_level: 0.76
+      confidence_min: 0.82
+      evidence_freshness_days_max: 7
+    - category: risk
+      min_required_level: 0.72
+      confidence_min: 0.78
+      evidence_freshness_days_max: 14
+    - category: knowledge
+      min_required_level: 0.68
+      confidence_min: 0.75
+      evidence_freshness_days_max: 30
+  risks:
+    - risk_id: ownership-lock-in-misalignment
+      description: ownership path constrains future strategic pivots
+      severity: 0.88
+      likelihood: 0.46
+      mitigation: scenario-test ownership options under adverse states
+  failure_modes:
+    - mode_id: governance-friction-escalation
+      trigger: ownership structure introduces operational and legal complexity
+      impact: persistent decision latency and compliance overhead
+      detectability: 0.58
+  unlocks:
+    - target_decision_id: commit-identity-linked-public-positioning
+      rationale: identity commitments depend on durable ownership posture
+  blocked_when:
+    - condition_id: legal-ownership-floor-fail
+      expression: legal_exposure.current_level < 0.60
+      reason: legal readiness is critically low for structural ownership decisions
+      block_level: hard
+  simulation_only_conditions:
+    - condition_id: legal-ownership-low
+      expression: legal_exposure.current_level < 0.76
+      reason: ownership path remains simulation-only until legal floor is met
+      exit_criteria: increase legal_exposure current level to at least 0.76
+    - condition_id: ownership-knowledge-low
+      expression: knowledge.current_level < 0.68
+      reason: insufficient knowledge for structural ownership evaluation
+      exit_criteria: reach knowledge current level 0.68 with confidence >= 0.75
+
+- decision_id: decide-major-liability-commitment
+  domain: assets
+  decision_type: legal
+  irreversibility_score: 0.84
+  prerequisites:
+    - prerequisite_id: choose-credit-exposure-policy
+      description: credit exposure policy must be explicit before liability commitment
+      satisfied: false
+      evidence_ref: learnings/required
+    - prerequisite_id: authorize-capital-allocation-envelope
+      description: capital envelope must support liability carrying capacity
+      satisfied: false
+      evidence_ref: learnings/required
+    - prerequisite_id: approve-risk-cap-policy
+      description: downside limits must be approved before major liabilities
+      satisfied: false
+      evidence_ref: learnings/required
+  constraints_required:
+    - category: legal_exposure
+      min_required_level: 0.80
+      confidence_min: 0.84
+      evidence_freshness_days_max: 7
+    - category: risk
+      min_required_level: 0.76
+      confidence_min: 0.80
+      evidence_freshness_days_max: 14
+    - category: money
+      min_required_level: 0.70
+      confidence_min: 0.80
+      evidence_freshness_days_max: 30
+    - category: emotional_maturity
+      min_required_level: 0.74
+      confidence_min: 0.78
+      evidence_freshness_days_max: 7
+  risks:
+    - risk_id: liability-lock-in
+      description: high-obligation commitments reduce exit optionality and increase downside severity
+      severity: 0.94
+      likelihood: 0.52
+      mitigation: require adverse-case stress validation before commitment
+  failure_modes:
+    - mode_id: covenant-fragility
+      trigger: liability assumptions break under moderate adverse variation
+      impact: cascading legal and financial stress
+      detectability: 0.55
+  unlocks:
+    - target_decision_id: launch-domain-specific-execution-plan
+      rationale: major commitments may gate launch readiness and risk posture
+  blocked_when:
+    - condition_id: legal-liability-critical
+      expression: legal_exposure.current_level < 0.62
+      reason: legal readiness is critically low for major liability commitment
+      block_level: hard
+    - condition_id: emotional-liability-critical
+      expression: emotional_maturity.current_level < 0.72
+      reason: emotional stability is critically low for high-irreversibility commitment
+      block_level: hard
+  simulation_only_conditions:
+    - condition_id: legal-liability-low
+      expression: legal_exposure.current_level < 0.80
+      reason: liability commitment remains simulation-only until legal floor is met
+      exit_criteria: increase legal_exposure current level to 0.80 with confidence >= 0.84
+    - condition_id: risk-liability-low
+      expression: risk.current_level < 0.76
+      reason: risk posture insufficient for execute-level liability commitment
+      exit_criteria: raise risk current level to 0.76 with confidence >= 0.80
