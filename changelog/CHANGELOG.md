@@ -560,3 +560,78 @@ Use this template for every update:
   - Rationale: log node additions, gate outcomes, and in-cycle hardening event.
   - Impact: maintains recursive learning continuity.
   - Migration Notes: one learning record per cycle.
+
+## [0.8.0] - 2026-03-02
+### Changed
+- Artifact: `graph/canonical-decision-graph.md`
+  - Change Class: `threshold-tuning`
+  - Rationale: introduce meta-layer sequencing edges and align prerequisite reachability.
+  - Impact: enables deterministic arbitration/escalation path without violating graph invariants.
+  - Migration Notes: rerun traversal audit after any meta-edge update.
+
+- Artifact: `graph/universal-decision-nodes.yaml`
+  - Change Class: `threshold-tuning`
+  - Rationale: materialize meta-decision nodes and calibrate stress-path gating for safe activation.
+  - Impact: global arbitration and escalation decisions are now representable in canonical schema.
+  - Migration Notes: maintain simulation-first behavior for recoverable stress states.
+
+- Artifact: `engine/next-best-decision-spec.md`
+  - Change Class: `threshold-tuning`
+  - Rationale: add deterministic meta-arbitration layer and escalation-loop guard.
+  - Impact: NBA can switch strategy mode under global stress without breaking determinism.
+  - Migration Notes: keep meta override subordinate to hard safety gates.
+
+- Artifact: `progression/decision-impact-model.yaml`
+  - Change Class: `threshold-tuning`
+  - Rationale: encode temporal impact behavior for meta decisions.
+  - Impact: stress projections now reflect strategic arbitration effects over time.
+  - Migration Notes: update meta impacts when escalation policy semantics evolve.
+
+- Artifact: `constraints/constraint-compounding-model.md`
+  - Change Class: `threshold-tuning`
+  - Rationale: include meta decisions in risk-relief counterbalance logic.
+  - Impact: reduces artificial risk persistence after valid strategic interventions.
+  - Migration Notes: validate with stress-projection evidence on each calibration change.
+
+### Added
+- Artifact: `simulation/cycle-008-meta-stress-profiles.yaml`
+  - Change Class: `non-breaking-doc`
+  - Rationale: define dedicated meta-layer stress scenarios (growth/compliance/liquidity/capital shock).
+  - Impact: validates arbitration behavior under cross-domain tension.
+  - Migration Notes: maintain scenario comparability for future cycle deltas.
+
+- Artifact: `simulation/cycle-008-traversal-audit.md`
+  - Change Class: `non-breaking-doc`
+  - Rationale: record invariant verification after meta-layer insertion.
+  - Impact: confirms no cycles/backward unlocks/prerequisite bypass.
+  - Migration Notes: one traversal report per cycle.
+
+- Artifact: `simulation/cycle-008-determinism-regression.md`
+  - Change Class: `non-breaking-doc`
+  - Rationale: confirm deterministic stability after meta-layer changes.
+  - Impact: ensures no order-dependent behavior introduced.
+  - Migration Notes: keep shuffled-order regression in every cycle.
+
+- Artifact: `simulation/cycle-008-forward-projection.md`
+  - Change Class: `non-breaking-doc`
+  - Rationale: document stress-projection outcomes for meta-layer behavior.
+  - Impact: verifies no risk spike, no null NBA, no escalation loops in tested scenarios.
+  - Migration Notes: preserve stress profile set for trend tracking.
+
+- Artifact: `simulation/cycle-008-stop-and-hardening.md`
+  - Change Class: `non-breaking-doc`
+  - Rationale: document stop-condition trigger and restoration actions during autonomous cycle.
+  - Impact: preserves auditable safety-governed autonomy behavior.
+  - Migration Notes: emit whenever stop conditions trigger within a cycle.
+
+- Artifact: `reports/stability-cycle-008.md`
+  - Change Class: `non-breaking-doc`
+  - Rationale: publish post-meta-layer stability verdict and gate metrics.
+  - Impact: provides cycle readiness signal for continued autonomous progression.
+  - Migration Notes: continue one stability report per cycle.
+
+- Artifact: `learnings/2026-03-02-cycle-008-meta-decision-layer.md`
+  - Change Class: `non-breaking-doc`
+  - Rationale: capture meta-layer additions, stop-event recovery, and final outcomes.
+  - Impact: preserves learning continuity for strategy-layer evolution.
+  - Migration Notes: maintain one learning record per cycle.

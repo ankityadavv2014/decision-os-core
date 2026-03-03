@@ -29,6 +29,10 @@ Each node must validate against `schemas/decision-node.schema.yaml` when materia
 | design-operating-system-routines | operations | operational | 0.40 | supports durable execution discipline |
 | approve-risk-cap-policy | risk | structural | 0.67 | limits downside and exposure stacking |
 | authorize-capital-allocation-envelope | assets | financial | 0.69 | controls capital concentration and deployment bounds |
+| prioritize-competing-constraints | risk | structural | 0.71 | arbitrates highest-severity active constraints under multi-deficit states |
+| resolve-conflicting-objectives | operations | structural | 0.75 | resolves cross-domain objective conflicts before irreversible progression |
+| invoke-escalation-policy | learning | legal | 0.79 | enters explicit escalation governance under systemic stress |
+| enter-conservative-mode | operations | structural | 0.83 | enforces strategic risk-downshift when safety margins compress |
 | launch-domain-specific-execution-plan | operations | operational | 0.86 | irreversible launch commitment boundary before external handoff |
 
 ## Canonical Sequencing Edges
@@ -57,6 +61,14 @@ Each node must validate against `schemas/decision-node.schema.yaml` when materia
 - design-operating-system-routines -> launch-domain-specific-execution-plan
 - authorize-capital-allocation-envelope -> launch-domain-specific-execution-plan
 - decide-major-liability-commitment -> launch-domain-specific-execution-plan
+- validate-core-contract-literacy -> prioritize-competing-constraints
+- establish-legal-safety-baseline -> prioritize-competing-constraints
+- approve-risk-cap-policy -> prioritize-competing-constraints
+- prioritize-competing-constraints -> resolve-conflicting-objectives
+- define-income-stability-strategy -> resolve-conflicting-objectives
+- resolve-conflicting-objectives -> invoke-escalation-policy
+- invoke-escalation-policy -> enter-conservative-mode
+- enter-conservative-mode -> launch-domain-specific-execution-plan
 
 ## Global Blocker Patterns
 

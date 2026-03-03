@@ -131,3 +131,69 @@
     delayed:
       steps: 3
       effect: compounding workload can degrade emotional stability without recovery buffers
+
+- decision_id: prioritize-competing-constraints
+  irreversibility_score: 0.71
+  permanent_constraint_shifts:
+    risk:
+      required_level_delta: -0.01
+    legal_exposure:
+      required_level_delta: -0.005
+  compounding_risks:
+    - mis-prioritized-constraint-triage
+  options_closed:
+    - ad-hoc-priority-switching
+  temporal_effects:
+    immediate:
+      risk.current_level_delta: 0.02
+      legal_exposure.current_level_delta: 0.01
+
+- decision_id: resolve-conflicting-objectives
+  irreversibility_score: 0.75
+  permanent_constraint_shifts:
+    time:
+      required_level_delta: -0.01
+    cognitive_load:
+      required_level_delta: -0.01
+  compounding_risks:
+    - unresolved-objective-deadlock
+  options_closed:
+    - unmanaged-cross-domain-conflict
+  temporal_effects:
+    immediate:
+      risk.current_level_delta: 0.015
+      time.current_level_delta: 0.02
+      cognitive_load.current_level_delta: 0.02
+
+- decision_id: invoke-escalation-policy
+  irreversibility_score: 0.79
+  permanent_constraint_shifts:
+    legal_exposure:
+      required_level_delta: -0.015
+    risk:
+      required_level_delta: -0.01
+  compounding_risks:
+    - escalation-misfire
+  options_closed:
+    - silent-escalation-avoidance
+  temporal_effects:
+    immediate:
+      legal_exposure.current_level_delta: 0.03
+      risk.current_level_delta: 0.025
+
+- decision_id: enter-conservative-mode
+  irreversibility_score: 0.83
+  permanent_constraint_shifts:
+    risk:
+      required_level_delta: -0.01
+    money:
+      required_level_delta: -0.01
+  compounding_risks:
+    - over-conservative-lock
+  options_closed:
+    - high-volatility-expansion-window
+  temporal_effects:
+    immediate:
+      risk.current_level_delta: 0.035
+      money.current_level_delta: 0.02
+      time.current_level_delta: 0.01

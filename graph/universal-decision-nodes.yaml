@@ -613,3 +613,207 @@
       expression: risk.current_level < 0.76
       reason: risk posture insufficient for execute-level liability commitment
       exit_criteria: raise risk current level to 0.76 with confidence >= 0.80
+
+- decision_id: prioritize-competing-constraints
+  domain: risk
+  decision_type: structural
+  irreversibility_score: 0.71
+  prerequisites:
+    - prerequisite_id: validate-core-contract-literacy
+      description: baseline literacy is required to interpret cross-constraint tradeoffs safely
+      satisfied: false
+      evidence_ref: learnings/required
+    - prerequisite_id: establish-legal-safety-baseline
+      description: legal baseline must exist before prioritization arbitration
+      satisfied: false
+      evidence_ref: learnings/required
+  constraints_required:
+    - category: risk
+      min_required_level: 0.68
+      confidence_min: 0.78
+      evidence_freshness_days_max: 14
+    - category: legal_exposure
+      min_required_level: 0.66
+      confidence_min: 0.80
+      evidence_freshness_days_max: 7
+    - category: knowledge
+      min_required_level: 0.65
+      confidence_min: 0.75
+      evidence_freshness_days_max: 30
+  risks:
+    - risk_id: mis-prioritized-constraint-triage
+      description: incorrect constraint prioritization amplifies systemic fragility
+      severity: 0.83
+      likelihood: 0.44
+      mitigation: enforce deterministic precedence and audit trail references
+  failure_modes:
+    - mode_id: false-relief-selection
+      trigger: low-severity relief selected while high-severity risk remains unresolved
+      impact: delayed risk escalation and hidden drift accumulation
+      detectability: 0.61
+  unlocks:
+    - target_decision_id: resolve-conflicting-objectives
+      rationale: objective conflict resolution requires prior severity arbitration context
+  blocked_when:
+    - condition_id: critical-legal-priority-gap
+      expression: legal_exposure.current_level < 0.55
+      reason: legal certainty is critically low for safe constraint-priority arbitration
+      block_level: hard
+  simulation_only_conditions:
+    - condition_id: risk-priority-low
+      expression: risk.current_level < 0.68
+      reason: priority arbitration remains simulation-only until risk floor is met
+      exit_criteria: raise risk current level to at least 0.68
+
+- decision_id: resolve-conflicting-objectives
+  domain: operations
+  decision_type: structural
+  irreversibility_score: 0.75
+  prerequisites:
+    - prerequisite_id: prioritize-competing-constraints
+      description: competing constraints must be ranked before objective conflict resolution
+      satisfied: false
+      evidence_ref: learnings/required
+    - prerequisite_id: design-operating-system-routines
+      description: operational stability context is required for objective tradeoff arbitration
+      satisfied: false
+      evidence_ref: learnings/required
+  constraints_required:
+    - category: risk
+      min_required_level: 0.70
+      confidence_min: 0.78
+      evidence_freshness_days_max: 14
+    - category: time
+      min_required_level: 0.52
+      confidence_min: 0.72
+      evidence_freshness_days_max: 14
+    - category: cognitive_load
+      min_required_level: 0.52
+      confidence_min: 0.72
+      evidence_freshness_days_max: 7
+  risks:
+    - risk_id: unresolved-objective-deadlock
+      description: unresolved objective conflicts generate unstable decision sequencing
+      severity: 0.85
+      likelihood: 0.41
+      mitigation: force explicit arbitration and tie-break rationale logging
+  failure_modes:
+    - mode_id: oscillating-priority-switching
+      trigger: objective ranking shifts each step without durable arbitration lock
+      impact: repeated loop tendency and drift amplification
+      detectability: 0.63
+  unlocks:
+    - target_decision_id: invoke-escalation-policy
+      rationale: escalation policies should trigger only after objective conflict resolution attempts
+  blocked_when:
+    - condition_id: critical-cognitive-fragility
+      expression: cognitive_load.current_level < 0.40
+      reason: cognitive fragility is too high for robust objective arbitration
+      block_level: hard
+  simulation_only_conditions:
+    - condition_id: time-objective-low
+      expression: time.current_level < 0.52
+      reason: objective arbitration remains simulation-only while time headroom is insufficient
+      exit_criteria: raise time current level to at least 0.52
+
+- decision_id: invoke-escalation-policy
+  domain: learning
+  decision_type: legal
+  irreversibility_score: 0.79
+  prerequisites:
+    - prerequisite_id: resolve-conflicting-objectives
+      description: escalation follows failed or insufficient objective conflict resolution
+      satisfied: false
+      evidence_ref: learnings/required
+    - prerequisite_id: establish-legal-safety-baseline
+      description: legal baseline is required before formal escalation mode invocation
+      satisfied: false
+      evidence_ref: learnings/required
+  constraints_required:
+    - category: legal_exposure
+      min_required_level: 0.78
+      confidence_min: 0.84
+      evidence_freshness_days_max: 7
+    - category: risk
+      min_required_level: 0.74
+      confidence_min: 0.80
+      evidence_freshness_days_max: 14
+    - category: knowledge
+      min_required_level: 0.70
+      confidence_min: 0.78
+      evidence_freshness_days_max: 30
+  risks:
+    - risk_id: escalation-misfire
+      description: escalation triggered without sufficient cross-domain stress evidence
+      severity: 0.87
+      likelihood: 0.36
+      mitigation: require deterministic escalation trigger signature and contradiction references
+  failure_modes:
+    - mode_id: escalation-loop
+      trigger: escalation repeatedly re-enters without state improvement
+      impact: governance lock and sequence stall
+      detectability: 0.66
+  unlocks:
+    - target_decision_id: enter-conservative-mode
+      rationale: conservative strategic mode is downstream of escalation invocation
+  blocked_when:
+    - condition_id: critical-legal-escalation-gap
+      expression: legal_exposure.current_level < 0.60
+      reason: legal readiness is critically low for formal escalation invocation
+      block_level: hard
+  simulation_only_conditions:
+    - condition_id: legal-escalation-low
+      expression: legal_exposure.current_level < 0.78
+      reason: escalation policy remains simulation-only until legal floor is met
+      exit_criteria: raise legal_exposure current level to at least 0.78
+
+- decision_id: enter-conservative-mode
+  domain: operations
+  decision_type: structural
+  irreversibility_score: 0.83
+  prerequisites:
+    - prerequisite_id: invoke-escalation-policy
+      description: conservative mode follows explicit escalation governance activation
+      satisfied: false
+      evidence_ref: learnings/required
+    - prerequisite_id: prioritize-competing-constraints
+      description: conservative-mode bias requires established constraint severity ordering
+      satisfied: false
+      evidence_ref: learnings/required
+  constraints_required:
+    - category: risk
+      min_required_level: 0.76
+      confidence_min: 0.82
+      evidence_freshness_days_max: 14
+    - category: legal_exposure
+      min_required_level: 0.78
+      confidence_min: 0.84
+      evidence_freshness_days_max: 7
+    - category: emotional_maturity
+      min_required_level: 0.74
+      confidence_min: 0.80
+      evidence_freshness_days_max: 7
+  risks:
+    - risk_id: over-conservative-lock
+      description: prolonged conservative mode suppresses necessary progression and optionality
+      severity: 0.81
+      likelihood: 0.39
+      mitigation: enforce explicit conservative-mode exit criteria and trend checks
+  failure_modes:
+    - mode_id: conservative-stall
+      trigger: conservative mode remains active despite recovered safety margins
+      impact: unnecessary growth suppression and objective stagnation
+      detectability: 0.64
+  unlocks:
+    - target_decision_id: launch-domain-specific-execution-plan
+      rationale: conservative-mode outcomes must gate final execution posture
+  blocked_when:
+    - condition_id: critical-emotional-conservative-gap
+      expression: emotional_maturity.current_level < 0.70
+      reason: emotional stability is critically low for strategic mode lock-in
+      block_level: hard
+  simulation_only_conditions:
+    - condition_id: conservative-risk-low
+      expression: risk.current_level < 0.76
+      reason: conservative mode remains simulation-only until risk floor is met
+      exit_criteria: raise risk current level to at least 0.76

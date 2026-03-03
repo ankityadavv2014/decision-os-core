@@ -41,7 +41,7 @@ Define structural compounding effects that emerge over multiple decision steps.
 ### 5) Risk-Relief Counterbalance
 
 - Trigger:
-  - active step decision is a risk-relief structural decision (`approve-risk-cap-policy`, `establish-legal-safety-baseline`).
+  - active step decision is a risk-relief structural decision (`approve-risk-cap-policy`, `establish-legal-safety-baseline`, `prioritize-competing-constraints`, `resolve-conflicting-objectives`, `invoke-escalation-policy`, `enter-conservative-mode`).
 - Effect per step:
   - `risk.current_level += 0.02`
   - `legal_exposure.current_level += 0.015`

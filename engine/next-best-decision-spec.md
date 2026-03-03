@@ -24,11 +24,19 @@ All candidate evaluation and ordering must follow this exact sequence:
    - evaluate hard constraints (`legal_exposure`, `risk`, and decision `blocked_when` hard rules).
    - any hard safety failure yields `ineligible-hard-block`.
 
-3. **Irreversibility ordering**
+3. **Meta-arbitration filter**
+   - when global stress signatures are present, meta-decisions may override local NBA selection:
+     - `resolve-conflicting-objectives` for persistent cross-domain objective conflict
+     - `invoke-escalation-policy` for sustained legal+risk degradation signature
+     - `prioritize-competing-constraints` for multi-deficit severity arbitration
+     - `enter-conservative-mode` when escalation confirms compressed safety margins
+   - meta override remains deterministic and must still satisfy all safety/precondition gates.
+
+4. **Irreversibility ordering**
    - among remaining candidates, order by ascending `irreversibility_score`.
    - exception: if a mandatory precedence rule requires a higher-irreversibility safety gate first, precedence rule wins.
 
-4. **Constraint relief logic**
+5. **Constraint relief logic**
    - prefer node that resolves the highest-severity active constraint class in deterministic order:
      - `legal_exposure`
      - `risk`
@@ -40,12 +48,12 @@ All candidate evaluation and ordering must follow this exact sequence:
    - risk-trend override:
      - if `risk_exposure_trend` is `degrading` for 2 or more consecutive steps, candidate ordering must prioritize eligible decisions that improve risk trend before money/time relief, unless blocked by legal hard block.
 
-5. **Optionality impact**
+6. **Optionality impact**
    - compute projected optionality using `progression/optionality-model.md`.
    - prefer node with higher projected `optionality_score` when safety-equivalent.
    - for ties, prefer node with lower expected lock-in horizon.
 
-6. **Final deterministic tie-break**
+7. **Final deterministic tie-break**
    - lexicographic `decision_id`.
 
 Status outcomes per node:
@@ -72,6 +80,8 @@ These rules prevent unsafe unlock behavior:
 - equivalent-loop guard:
   - if selection cycles among a small repeated root-safe set (<=2 unique decisions over 4 consecutive steps), force pivot to highest-severity unresolved constraint class that is improvable by at least one eligible candidate.
   - pivot candidate must be outside the active loop set when such candidate exists.
+- meta escalation loop guard:
+  - `invoke-escalation-policy` cannot be selected in consecutive steps unless risk/legal stress index worsens step-over-step.
 
 ## Output Contract
 
