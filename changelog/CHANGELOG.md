@@ -161,3 +161,126 @@ Use this template for every update:
   - Rationale: persist cycle assumptions, failures, and strengthened rules.
   - Impact: supports recursive improvement and audit traceability.
   - Migration Notes: maintain one learning record per recursive cycle.
+
+## [0.3.0] - 2026-03-02
+### Changed
+- Artifact: `graph/canonical-decision-graph.md`
+  - Change Class: `threshold-tuning`
+  - Rationale: enforce monotonic irreversibility, remove unsafe shortcut paths, and strengthen risk-cap sequencing dependencies.
+  - Impact: graph traversal is now safety-monotonic and less evaluator-ambiguous.
+  - Migration Notes: align runtime graph evaluators to updated edges and launch irreversibility score.
+
+- Artifact: `graph/universal-decision-nodes.yaml`
+  - Change Class: `threshold-tuning`
+  - Rationale: harden prerequisites/blocked conditions and materialize controlled subset of remaining canonical nodes.
+  - Impact: expanded node coverage improves safe progression and reduces localized deadlocks.
+  - Migration Notes: revalidate all node packs against canonical schema after pull.
+
+- Artifact: `engine/next-best-decision-spec.md`
+  - Change Class: `threshold-tuning`
+  - Rationale: remove heuristic weight stacking and enforce deterministic rule hierarchy.
+  - Impact: next-best outputs are stable and reproducible across evaluator implementations.
+  - Migration Notes: remove weighted ranking logic in downstream engines.
+
+- Artifact: `constraints/constraint-model.md`
+  - Change Class: `threshold-tuning`
+  - Rationale: formalize deterministic evaluation order and integrate risk-cap precedence.
+  - Impact: conflict resolution is fail-closed and deterministic.
+  - Migration Notes: apply precedence order exactly as documented.
+
+- Artifact: `readiness/readiness-framework.md`
+  - Change Class: `threshold-tuning`
+  - Rationale: tighten structural and identity-locking thresholds to require multi-dimensional readiness.
+  - Impact: single-dimension unlock paths for high-impact decisions are removed.
+  - Migration Notes: update readiness calculators for new floors and extra-gate conjunctive checks.
+
+- Artifact: `execution/execution-bridge-spec.md`
+  - Change Class: `non-breaking-doc`
+  - Rationale: harden boundary language to explicitly prohibit advice-generation and autonomous execution.
+  - Impact: clearer separation between decision intelligence and execution systems.
+  - Migration Notes: none.
+
+- Artifact: `governance/agent-governance.md`
+  - Change Class: `non-breaking-doc`
+  - Rationale: strengthen fail-closed enforcement wording for ontology/constraint override attempts.
+  - Impact: agent authority boundaries are stricter and less ambiguous.
+  - Migration Notes: none.
+
+- Artifact: `simulation/contradiction-testing-protocol.md`
+  - Change Class: `non-breaking-doc`
+  - Rationale: add explicit oscillation test requirement for next-best output stability.
+  - Impact: contradiction testing now includes deterministic output consistency checks.
+  - Migration Notes: run oscillation check in every simulation cycle.
+
+- Artifact: `evolution/evolution-hardening.md`
+  - Change Class: `non-breaking-doc`
+  - Rationale: add explicit modification/deprecation rules and deterministic contradiction workflow.
+  - Impact: long-term governance is more explicit for lifecycle operations.
+  - Migration Notes: include deprecation mapping in future node retirement changes.
+
+### Added
+- Artifact: `simulation/cycle-003-deep-simulation-results.md`
+  - Change Class: `non-breaking-doc`
+  - Rationale: record deep edge-profile stress outcomes, deadlock status, and oscillation findings.
+  - Impact: improves audit trail for simulation hardening.
+  - Migration Notes: continue one deep simulation result artifact per hardening cycle.
+
+- Artifact: `simulation/c002-resolution-analysis.md`
+  - Change Class: `non-breaking-doc`
+  - Rationale: document root-cause and systemic resolution of C-002 unsafe unlock contradiction.
+  - Impact: preserves deterministic reasoning path for future regression checks.
+  - Migration Notes: reference this contradiction record when modifying risk-cap logic.
+
+- Artifact: `simulation/cycle-003-graph-traversal-safety-audit.md`
+  - Change Class: `non-breaking-doc`
+  - Rationale: capture traversal verification for shortcut-path safety invariants.
+  - Impact: provides proof artifact for graph safety checks.
+  - Migration Notes: rerun when adding or reordering edges.
+
+- Artifact: `simulation/cycle-003-step-14-expansion-replay.md`
+  - Change Class: `non-breaking-doc`
+  - Rationale: log controlled node materialization and replay outcomes after each addition.
+  - Impact: demonstrates safe expansion without reintroducing deadlocks or oscillation.
+  - Migration Notes: preserve 3-5 node expansion limit with replay per step.
+
+- Artifact: `schemas/schema-validation-protocol.md`
+  - Change Class: `non-breaking-doc`
+  - Rationale: define repeatable schema and optional-field integrity validation process.
+  - Impact: schema compliance checks become reproducible across cycles.
+  - Migration Notes: run protocol before every release commit.
+
+- Artifact: `schemas/cycle-003-schema-validation-report.md`
+  - Change Class: `non-breaking-doc`
+  - Rationale: record cycle-level schema validation pass for materialized nodes.
+  - Impact: provides compliance evidence for this hardening cycle.
+  - Migration Notes: update node count and outcome each cycle.
+
+- Artifact: `learnings/2026-03-02-cycle-003-step-01-monotonic-audit.md`
+  - Change Class: `non-breaking-doc`
+  - Rationale: persist monotonic violation detection and pre-fix reasoning.
+  - Impact: traceability for graph safety changes.
+  - Migration Notes: none.
+
+- Artifact: `learnings/2026-03-02-cycle-003-step-02-node-audit.md`
+  - Change Class: `non-breaking-doc`
+  - Rationale: persist node completeness findings and remediations.
+  - Impact: improves node-quality audit lineage.
+  - Migration Notes: none.
+
+- Artifact: `learnings/2026-03-02-cycle-003-step-06-constraint-integrity-audit.md`
+  - Change Class: `non-breaking-doc`
+  - Rationale: record deterministic integrity check outcomes for constraints model.
+  - Impact: supports constraint-governance continuity.
+  - Migration Notes: none.
+
+- Artifact: `learnings/2026-03-02-cycle-003-hardening-pass.md`
+  - Change Class: `non-breaking-doc`
+  - Rationale: capture cycle-level assumption shifts, anomalies, and rule hardening outcomes.
+  - Impact: strengthens recursive learning loop.
+  - Migration Notes: maintain one hardening learning record per cycle.
+
+- Artifact: `learnings/2026-03-02-cycle-003-stability-report.md`
+  - Change Class: `non-breaking-doc`
+  - Rationale: provide structured cycle stability rating and expansion recommendation.
+  - Impact: creates explicit go/no-go signal for next cycle scope.
+  - Migration Notes: refresh stability rating every cycle.

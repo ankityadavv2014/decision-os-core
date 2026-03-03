@@ -16,6 +16,10 @@ Define the finite constraints that govern if a decision can progress safely.
 
 Each decision node specifies `constraints_required` with minimum levels and evidence quality.
 
+Category uniqueness rule:
+- Each category is canonical and appears exactly once in evaluator state.
+- Domain overlays may adjust thresholds but may not duplicate or rename canonical categories.
+
 ## Constraint State Mechanics
 
 Each constraint follows one or more state dynamics:
@@ -65,8 +69,9 @@ When constraints compete, apply deterministic precedence:
 1. `legal_exposure` hard blocks override all speed/cost preferences.
 2. `risk` hard blocks override economic upside and timeline pressure.
 3. `emotional_maturity` hard block overrides identity-locking and irreversible decisions.
-4. `time` vs `money` trade-off is allowed only if legal/risk/compliance minimums remain met.
-5. `speed` vs `compliance` always resolves in favor of compliance.
+4. unresolved `risk` policy caps (for capital allocation/liability decisions) override money/time acceleration preferences.
+5. `time` vs `money` trade-off is allowed only if legal/risk/compliance minimums remain met.
+6. `speed` vs `compliance` always resolves in favor of compliance.
 
 ## Conflict Resolution Matrix (Canonical)
 
@@ -83,3 +88,23 @@ When constraints compete, apply deterministic precedence:
 - Constraint confidence below `0.60` downgrades `pass` to `soft_block`.
 - Evidence older than domain-defined freshness windows downgrades outcome one level.
 - Missing freshness override in a node must not disable freshness checks; canonical defaults still apply.
+
+## Formal Evaluation Order (Deterministic)
+
+Evaluate constraints in this fixed order for every candidate decision:
+
+1. hydrate canonical categories (single instance each).
+2. apply freshness downgrade checks using stricter-of(node, canonical-default).
+3. apply confidence downgrade checks.
+4. evaluate category thresholds in precedence order:
+   - `legal_exposure`
+   - `risk`
+   - `emotional_maturity` (only for identity-locking or `irreversibility_score >= 0.80`)
+   - `money`
+   - `time`
+   - `knowledge`
+   - `cognitive_load`
+5. collapse category outcomes into one of: `hard_block`, `simulation_only`, `soft_block`, `pass`.
+
+Resolution is fail-closed:
+- when multiple outcomes apply, choose most conservative (`hard_block` > `simulation_only` > `soft_block` > `pass`).

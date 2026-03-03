@@ -26,7 +26,11 @@ Define deterministic simulation checks used to detect deadlocks, contradictory b
 3. **Unsafe Unlock Check**
    - fail when a predecessor with lower safety requirement unlocks a high-irreversibility node without legal/risk coverage.
 
-4. **Freshness Check**
+4. **Oscillation Check**
+   - run next-best selection repeatedly with identical input and shuffled candidate ordering.
+   - fail when output `next_decision_id` changes across runs.
+
+5. **Freshness Check**
    - fail when stale evidence is treated as `pass` due to missing node-level freshness override.
 
 ## Resolution Rules

@@ -9,6 +9,8 @@ Define how `execute-eligible` decisions are handed off to external execution pla
 - no direct platform integrations
 - no API automation
 - no action orchestration
+- no actionable legal, financial, or compliance advice generation
+- no autonomous execution triggering from Decision OS Core outputs
 
 ## Handoff Payload Contract
 
@@ -55,3 +57,4 @@ External systems consuming handoff payloads must:
 - Decision OS Core does not own execution.
 - Execution systems cannot reinterpret hard-block logic.
 - Missing outcome evidence downgrades future related decisions to at most `learn-only`.
+- Handoff artifacts are informational control payloads, not directives, recommendations, or legal instructions.

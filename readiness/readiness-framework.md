@@ -35,8 +35,8 @@ Execution thresholds by `decision_type`:
 | operational | 0.50 | 0.62 | compliance_capacity >= 0.60 |
 | financial | 0.55 | 0.68 | financial_readiness >= 0.65 |
 | legal | 0.60 | 0.72 | compliance_capacity >= 0.75 |
-| structural | 0.58 | 0.70 | time_readiness >= 0.60 |
-| identity-locking | 0.65 | 0.76 | emotional_stability >= 0.70 |
+| structural | 0.62 | 0.74 | time_readiness >= 0.65 AND compliance_capacity >= 0.68 AND financial_readiness >= 0.60 |
+| identity-locking | 0.68 | 0.79 | emotional_stability >= 0.74 AND compliance_capacity >= 0.72 |
 
 `irreversibility_score >= 0.80` applies an additional `+0.08` requirement to weighted average and a mandatory emotional stability floor of `0.72`.
 
@@ -77,3 +77,4 @@ When in `learn-only`:
 - Readiness never bypasses legal or risk hard blocks.
 - High confidence is required for all dimensions used to unlock execution.
 - No binary readiness flag is stored without dimension-level scores.
+- Structural and identity-locking execution eligibility must remain multi-dimensional; single-dimension gate satisfaction is insufficient.

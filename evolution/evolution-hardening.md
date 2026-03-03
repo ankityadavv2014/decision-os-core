@@ -43,3 +43,25 @@ Change is admissible only if:
 - Default merge posture for ambiguous safety impact: reject and request stronger evidence.
 - Contradiction IDs must be immutable and referenced in changelog.
 - Hardening failures are tracked as blocking items for the next cycle.
+
+## Decision Modification Rules
+
+- Every decision modification must include explicit before/after semantics and impacted unlock edges.
+- Modifications that increase eligibility for irreversible nodes require simulation replay evidence.
+- No modification may remove legal/risk blockers without corroborated learning evidence.
+
+## Deprecation Protocol
+
+- Deprecation requires:
+  - reason class (`obsolete`, `unsafe`, `contradictory`, `superseded`)
+  - replacement decision mapping (or explicit terminal rationale)
+  - migration note in changelog
+- Deprecated nodes remain queryable for historical audits and replay.
+
+## Deterministic Contradiction Workflow
+
+1. assign immutable contradiction ID.
+2. mark affected artifacts as provisional.
+3. apply conservative runtime posture (`learn-only` for impacted paths).
+4. adjudicate using evidence quality, recency, and safety bias.
+5. merge reconciled rule set and update changelog references.

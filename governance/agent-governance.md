@@ -41,6 +41,8 @@ Every run must include:
 - Any proposal conflicting with `legal_exposure`/`risk` hard-block invariants is auto-rejected.
 - Any proposal missing evidence references is non-admissible.
 - Any proposal altering required schema fields requires major-version governance path.
+- Any proposal attempting ontology override, constraint bypass, or new decision-type creation is blocked before review.
+- Merge gate is fail-closed: when enforcement checks are incomplete, proposal status remains rejected.
 
 ## Escalation Rules
 
@@ -52,3 +54,4 @@ Every run must include:
 - Agents report findings, not final canonical decisions.
 - Maintainers approve canonical changes through evolution protocol.
 - Safety bias dominates performance bias during adjudication.
+- Agent authority cannot supersede ontology, constraints, readiness, or schema invariants under any condition.

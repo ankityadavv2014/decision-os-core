@@ -12,46 +12,56 @@ This engine returns decision intelligence only (`learn-only` vs `execute-eligibl
 - readiness dimension scores with evidence/confidence
 - node prerequisites and blocker conditions
 
-## Eligibility Pipeline
+## Deterministic Selection Hierarchy
 
-Evaluate each candidate node in strict order:
+All candidate evaluation and ordering must follow this exact sequence:
 
-1. prerequisite satisfaction check
-2. hard-block evaluation from `blocked_when`
-3. constraint confidence/freshness checks
-4. readiness thresholds from `readiness/readiness-framework.md`
-5. irreversibility uplift checks
+1. **Readiness filter**
+   - apply readiness framework confidence, freshness, dimension floors, weighted threshold, and decision-type extra gates.
+   - classify candidate as `readiness-pass` or `readiness-fail`.
+
+2. **Safety filter**
+   - evaluate hard constraints (`legal_exposure`, `risk`, and decision `blocked_when` hard rules).
+   - any hard safety failure yields `ineligible-hard-block`.
+
+3. **Irreversibility ordering**
+   - among remaining candidates, order by ascending `irreversibility_score`.
+   - exception: if a mandatory precedence rule requires a higher-irreversibility safety gate first, precedence rule wins.
+
+4. **Constraint relief logic**
+   - prefer node that resolves the highest-severity active constraint class in deterministic order:
+     - `legal_exposure`
+     - `risk`
+     - `money`
+     - `time`
+     - `knowledge`
+     - `cognitive_load`
+     - `emotional_maturity`
+
+5. **Optionality impact**
+   - prefer node that preserves future optionality when safety-equivalent.
+   - for ties, prefer node with lower expected lock-in horizon.
+
+6. **Final deterministic tie-break**
+   - lexicographic `decision_id`.
 
 Status outcomes per node:
 - `ineligible-hard-block`
 - `eligible-learn-only`
 - `eligible-execute`
 
-## Priority Function
+## Mandatory Candidate Preconditions
 
-For nodes not hard-blocked, compute:
-
-`priority_score = (safety_gain * 0.35) + (unlock_value * 0.30) + (readiness_proximity * 0.20) + (reversibility_advantage * 0.15)`
-
-Where:
-- `safety_gain`: expected reduction in legal/risk exposure if resolved
-- `unlock_value`: number and criticality of downstream nodes unlocked
-- `readiness_proximity`: closeness to meeting execution thresholds
-- `reversibility_advantage`: lower irreversibility preferred when safety-equivalent
-
-## Deterministic Tie-Breakers
-
-1. Prefer nodes that reduce `legal_exposure` hard-block first.
-2. Then prefer nodes that reduce `risk` hard-block.
-3. Then prefer lower `irreversibility_score`.
-4. Then prefer older evidence refresh requirement.
-5. Final tie-break: lexicographic `decision_id`.
+- Candidate must have all prerequisites satisfied.
+- Candidate with stale evidence beyond freshness windows cannot outrank a fresher equivalent node.
+- Candidate with missing readiness evidence defaults to `eligible-learn-only` at most.
 
 ## Mandatory Precedence Rules
 
 These rules prevent unsafe unlock behavior:
 
 - `approve-risk-cap-policy` must be `eligible-execute` before `authorize-capital-allocation-envelope` can be selected as next best.
+- `approve-risk-cap-policy` must be at least `eligible-learn-only` before `decide-major-liability-commitment` can be selected.
 - no `identity-locking` node may be selected while any unresolved legal hard block exists.
 - no node with `irreversibility_score >= 0.80` may be selected when `emotional_stability < 0.72` or confidence `< 0.75`.
 
@@ -70,3 +80,4 @@ Engine returns:
 - Engine never outputs more than one next decision per cycle.
 - Engine never upgrades a hard-blocked decision to learn-only by preference.
 - Missing evidence cannot increase eligibility status.
+- Heuristic weight stacking is disallowed; only rule-ordered deterministic selection is valid.

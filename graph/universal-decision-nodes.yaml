@@ -2,7 +2,11 @@
   domain: risk
   decision_type: legal
   irreversibility_score: 0.62
-  prerequisites: []
+  prerequisites:
+    - prerequisite_id: validate-core-contract-literacy
+      description: core legal and contract vocabulary has been validated
+      satisfied: false
+      evidence_ref: learnings/required
   constraints_required:
     - category: legal_exposure
       min_required_level: 0.75
@@ -43,8 +47,20 @@
   decision_type: financial
   irreversibility_score: 0.73
   prerequisites:
+    - prerequisite_id: establish-legal-safety-baseline
+      description: legal safety baseline is established and current
+      satisfied: false
+      evidence_ref: learnings/required
     - prerequisite_id: validate-core-contract-literacy
       description: core contract terms and risk transfer mechanics are understood
+      satisfied: false
+      evidence_ref: learnings/required
+    - prerequisite_id: define-income-stability-strategy
+      description: income stability strategy is defined before leverage posture
+      satisfied: false
+      evidence_ref: learnings/required
+    - prerequisite_id: build-financial-buffer-policy
+      description: baseline buffer policy is defined before credit expansion
       satisfied: false
       evidence_ref: learnings/required
   constraints_required:
@@ -77,6 +93,10 @@
     - condition_id: risk-level-insufficient
       expression: risk.current_level < 0.70
       reason: risk posture below non-negotiable minimum
+      block_level: hard
+    - condition_id: legal-level-insufficient
+      expression: legal_exposure.current_level < 0.70
+      reason: unresolved legal exposure disallows leverage policy activation
       block_level: hard
   simulation_only_conditions:
     - condition_id: knowledge-confidence-low
@@ -138,3 +158,255 @@
       expression: emotional_maturity.confidence < 0.75
       reason: insufficient confidence for irreversible identity commitment
       exit_criteria: maintain stable evidence and confidence >= 0.75 for at least one refresh window
+
+- decision_id: validate-core-contract-literacy
+  domain: learning
+  decision_type: learning
+  irreversibility_score: 0.20
+  prerequisites:
+    - prerequisite_id: initial-context-capture
+      description: baseline context capture is completed before legal-literacy validation
+      satisfied: false
+      evidence_ref: learnings/required
+  constraints_required:
+    - category: knowledge
+      min_required_level: 0.45
+      confidence_min: 0.70
+      evidence_freshness_days_max: 45
+    - category: time
+      min_required_level: 0.35
+      confidence_min: 0.65
+  risks:
+    - risk_id: false-comprehension
+      description: user assumes legal comprehension without validated understanding
+      severity: 0.56
+      likelihood: 0.47
+      mitigation: use structured validation checkpoints
+  failure_modes:
+    - mode_id: rote-memorization-without-transfer
+      trigger: terms are memorized but not applied to realistic scenarios
+      impact: downstream policy choices remain fragile
+      detectability: 0.68
+  unlocks:
+    - target_decision_id: establish-legal-safety-baseline
+      rationale: literacy supports accurate legal baseline classification
+    - target_decision_id: choose-credit-exposure-policy
+      rationale: contract literacy reduces leverage misinterpretation
+  blocked_when:
+    - condition_id: knowledge-level-critical-low
+      expression: knowledge.current_level < 0.45
+      reason: baseline knowledge is too low for validated literacy
+      block_level: hard
+  simulation_only_conditions:
+    - condition_id: knowledge-confidence-low
+      expression: knowledge.confidence < 0.70
+      reason: confidence is insufficient for execution-level downstream unlocks
+      exit_criteria: complete validated literacy assessment at confidence >= 0.70
+
+- decision_id: define-income-stability-strategy
+  domain: income
+  decision_type: operational
+  irreversibility_score: 0.52
+  prerequisites:
+    - prerequisite_id: design-operating-system-routines
+      description: baseline operational routines are in place
+      satisfied: false
+      evidence_ref: learnings/required
+  constraints_required:
+    - category: time
+      min_required_level: 0.45
+      confidence_min: 0.70
+      evidence_freshness_days_max: 14
+    - category: knowledge
+      min_required_level: 0.55
+      confidence_min: 0.70
+      evidence_freshness_days_max: 45
+    - category: risk
+      min_required_level: 0.60
+      confidence_min: 0.70
+      evidence_freshness_days_max: 14
+  risks:
+    - risk_id: unstable-income-overprojection
+      description: income strategy assumes volatility can be ignored
+      severity: 0.74
+      likelihood: 0.51
+      mitigation: require scenario-based downside assumptions
+  failure_modes:
+    - mode_id: concentration-risk
+      trigger: strategy depends on single fragile source
+      impact: replenishment constraints degrade quickly under shock
+      detectability: 0.63
+  unlocks:
+    - target_decision_id: build-financial-buffer-policy
+      rationale: stable inflow planning is prerequisite to resilient buffers
+    - target_decision_id: choose-credit-exposure-policy
+      rationale: debt policy requires income stability model first
+  blocked_when:
+    - condition_id: risk-floor-fail
+      expression: risk.current_level < 0.60
+      reason: risk posture below minimum for income stability planning
+      block_level: hard
+  simulation_only_conditions:
+    - condition_id: time-confidence-low
+      expression: time.confidence < 0.70
+      reason: time availability evidence is not stable enough
+      exit_criteria: refresh time evidence and restore confidence to 0.70
+
+- decision_id: build-financial-buffer-policy
+  domain: assets
+  decision_type: financial
+  irreversibility_score: 0.58
+  prerequisites:
+    - prerequisite_id: define-income-stability-strategy
+      description: income stabilization strategy is defined and current
+      satisfied: false
+      evidence_ref: learnings/required
+  constraints_required:
+    - category: money
+      min_required_level: 0.50
+      confidence_min: 0.75
+      evidence_freshness_days_max: 30
+    - category: time
+      min_required_level: 0.40
+      confidence_min: 0.70
+      evidence_freshness_days_max: 14
+    - category: risk
+      min_required_level: 0.65
+      confidence_min: 0.70
+      evidence_freshness_days_max: 14
+  risks:
+    - risk_id: buffer-illusion
+      description: nominal buffer exists but is not liquid under stress
+      severity: 0.77
+      likelihood: 0.44
+      mitigation: require liquidity classification in buffer policy
+  failure_modes:
+    - mode_id: premature-risk-expansion
+      trigger: exposure increased before buffer policy is durable
+      impact: rapid regression to fragile state after minor shocks
+      detectability: 0.67
+  unlocks:
+    - target_decision_id: authorize-capital-allocation-envelope
+      rationale: allocation envelopes require resilient downside buffer
+    - target_decision_id: choose-credit-exposure-policy
+      rationale: leverage policy should be bound by buffer resilience
+  blocked_when:
+    - condition_id: money-floor-fail
+      expression: money.current_level < 0.50
+      reason: capital base is below minimum for robust buffer policy
+      block_level: hard
+  simulation_only_conditions:
+    - condition_id: money-confidence-low
+      expression: money.confidence < 0.75
+      reason: financial evidence confidence is insufficient
+      exit_criteria: increase verified financial confidence to >= 0.75
+
+- decision_id: approve-risk-cap-policy
+  domain: risk
+  decision_type: structural
+  irreversibility_score: 0.67
+  prerequisites:
+    - prerequisite_id: establish-legal-safety-baseline
+      description: legal baseline exists for policy boundary definition
+      satisfied: false
+      evidence_ref: learnings/required
+    - prerequisite_id: define-income-stability-strategy
+      description: income variability has been characterized
+      satisfied: false
+      evidence_ref: learnings/required
+  constraints_required:
+    - category: risk
+      min_required_level: 0.72
+      confidence_min: 0.75
+      evidence_freshness_days_max: 14
+    - category: legal_exposure
+      min_required_level: 0.72
+      confidence_min: 0.80
+      evidence_freshness_days_max: 7
+    - category: knowledge
+      min_required_level: 0.60
+      confidence_min: 0.75
+      evidence_freshness_days_max: 30
+  risks:
+    - risk_id: uncapped-downside-expansion
+      description: absent risk caps allow cumulative loss escalation
+      severity: 0.89
+      likelihood: 0.53
+      mitigation: enforce risk cap as gating policy for allocation and liability nodes
+  failure_modes:
+    - mode_id: cap-policy-not-binding
+      trigger: policy exists but lacks deterministic enforcement hooks
+      impact: pseudo-compliance with unchecked exposure growth
+      detectability: 0.61
+  unlocks:
+    - target_decision_id: authorize-capital-allocation-envelope
+      rationale: allocation requires explicit downside caps
+    - target_decision_id: decide-major-liability-commitment
+      rationale: liability commitments require bounded exposure assumptions
+    - target_decision_id: define-ownership-structure-path
+      rationale: structural design must inherit risk boundary policy
+  blocked_when:
+    - condition_id: legal-floor-fail
+      expression: legal_exposure.current_level < 0.72
+      reason: legal certainty insufficient for durable risk policy
+      block_level: hard
+    - condition_id: risk-floor-fail
+      expression: risk.current_level < 0.72
+      reason: risk signal quality is below cap-setting threshold
+      block_level: hard
+  simulation_only_conditions:
+    - condition_id: risk-confidence-low
+      expression: risk.confidence < 0.75
+      reason: risk evidence confidence too low for binding cap policy
+      exit_criteria: refresh risk evidence and lift confidence to >= 0.75
+
+- decision_id: design-operating-system-routines
+  domain: operations
+  decision_type: operational
+  irreversibility_score: 0.40
+  prerequisites:
+    - prerequisite_id: validate-core-contract-literacy
+      description: baseline literacy is available to reduce governance errors
+      satisfied: false
+      evidence_ref: learnings/required
+  constraints_required:
+    - category: time
+      min_required_level: 0.45
+      confidence_min: 0.70
+      evidence_freshness_days_max: 14
+    - category: cognitive_load
+      min_required_level: 0.50
+      confidence_min: 0.70
+      evidence_freshness_days_max: 7
+    - category: emotional_maturity
+      min_required_level: 0.60
+      confidence_min: 0.70
+      evidence_freshness_days_max: 7
+  risks:
+    - risk_id: routine-fragility
+      description: routines collapse under moderate stress and context changes
+      severity: 0.64
+      likelihood: 0.49
+      mitigation: define minimal durable cadence with stress contingencies
+  failure_modes:
+    - mode_id: over-optimization
+      trigger: routines optimize short-term throughput and exhaust recovery capacity
+      impact: sustained cognitive and emotional degradation
+      detectability: 0.66
+  unlocks:
+    - target_decision_id: define-income-stability-strategy
+      rationale: stable routines support repeatable income system execution
+    - target_decision_id: define-ownership-structure-path
+      rationale: structural ownership choices require operational stability
+    - target_decision_id: launch-domain-specific-execution-plan
+      rationale: execution launch requires operational discipline baseline
+  blocked_when:
+    - condition_id: cognitive-floor-fail
+      expression: cognitive_load.current_level < 0.50
+      reason: cognitive capacity is insufficient for durable routine design
+      block_level: hard
+  simulation_only_conditions:
+    - condition_id: emotional-confidence-low
+      expression: emotional_maturity.confidence < 0.70
+      reason: emotional evidence confidence insufficient for durable routine commitments
+      exit_criteria: stabilize emotional evidence confidence at >= 0.70

@@ -29,21 +29,25 @@ Each node must validate against `schemas/decision-node.schema.yaml` when materia
 | design-operating-system-routines | operations | operational | 0.40 | supports durable execution discipline |
 | approve-risk-cap-policy | risk | structural | 0.67 | limits downside and exposure stacking |
 | authorize-capital-allocation-envelope | assets | financial | 0.69 | controls capital concentration and deployment bounds |
-| launch-domain-specific-execution-plan | operations | operational | 0.49 | final bridge node before external handoff |
+| launch-domain-specific-execution-plan | operations | operational | 0.86 | irreversible launch commitment boundary before external handoff |
 
 ## Canonical Sequencing Edges
 
 `A -> B` means `A` is a prerequisite unlock for `B`.
 
-- establish-legal-safety-baseline -> validate-core-contract-literacy
+- validate-core-contract-literacy -> establish-legal-safety-baseline
 - validate-core-contract-literacy -> choose-credit-exposure-policy
 - establish-legal-safety-baseline -> decide-major-liability-commitment
 - define-income-stability-strategy -> build-financial-buffer-policy
+- define-income-stability-strategy -> choose-credit-exposure-policy
 - build-financial-buffer-policy -> authorize-capital-allocation-envelope
 - choose-credit-exposure-policy -> decide-major-liability-commitment
 - approve-risk-cap-policy -> authorize-capital-allocation-envelope
+- approve-risk-cap-policy -> decide-major-liability-commitment
 - define-ownership-structure-path -> commit-identity-linked-public-positioning
 - approve-risk-cap-policy -> define-ownership-structure-path
+- validate-core-contract-literacy -> design-operating-system-routines
+- design-operating-system-routines -> define-ownership-structure-path
 - design-operating-system-routines -> launch-domain-specific-execution-plan
 - authorize-capital-allocation-envelope -> launch-domain-specific-execution-plan
 - decide-major-liability-commitment -> launch-domain-specific-execution-plan
@@ -62,3 +66,9 @@ These blocker templates must be included when instantiating node YAML:
 - New nodes require proof that existing nodes cannot represent the same state transition.
 - Domain specialization belongs in downstream overlays; core graph remains universal.
 - Node additions without new gating semantics are rejected as duplicate abstraction.
+
+## Graph Safety Invariants
+
+- Unlock edges must be monotonic on irreversibility (`score(successor) >= score(predecessor)`).
+- Credit exposure nodes cannot be unlocked before income-stability node is satisfied.
+- Ownership-structure nodes cannot be unlocked before operating-system stability node is satisfied.
