@@ -33,10 +33,14 @@
       rationale: liability commitments require legal baseline first
   blocked_when:
     - condition_id: legal-level-insufficient
-      expression: legal_exposure.current_level < 0.75
-      reason: legal certainty is below safe threshold
+      expression: legal_exposure.current_level < 0.55
+      reason: legal certainty is critically low beyond viable legal-baseline progression
       block_level: hard
   simulation_only_conditions:
+    - condition_id: legal-level-low
+      expression: legal_exposure.current_level < 0.75
+      reason: legal baseline may progress only in simulation while legal exposure remains below execution threshold
+      exit_criteria: raise legal_exposure current level to at least 0.75
     - condition_id: legal-confidence-low
       expression: legal_exposure.confidence < 0.80
       reason: confidence too low for execution-path decisions
@@ -406,10 +410,14 @@
       rationale: execution launch requires operational discipline baseline
   blocked_when:
     - condition_id: cognitive-floor-fail
-      expression: cognitive_load.current_level < 0.50
-      reason: cognitive capacity is insufficient for durable routine design
+      expression: cognitive_load.current_level < 0.35
+      reason: cognitive capacity is critically low for routine-design progression
       block_level: hard
   simulation_only_conditions:
+    - condition_id: cognitive-level-low
+      expression: cognitive_load.current_level < 0.50
+      reason: reduced cognitive headroom allows simulation-only routine design
+      exit_criteria: increase cognitive_load current level to at least 0.50
     - condition_id: emotional-confidence-low
       expression: emotional_maturity.confidence < 0.70
       reason: emotional evidence confidence insufficient for durable routine commitments

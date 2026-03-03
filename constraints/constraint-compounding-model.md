@@ -12,7 +12,7 @@ Define structural compounding effects that emerge over multiple decision steps.
   - credit/liability decisions present in history and `money.current_level < money.required_level`.
 - Effect per step:
   - `money.current_level -= 0.02`
-  - `risk.current_level -= 0.015`
+  - `risk.current_level -= 0.010`
 
 ### 2) Time Debt Accumulation
 
@@ -28,7 +28,7 @@ Define structural compounding effects that emerge over multiple decision steps.
   - `cognitive_load.current_level < 0.45` for 2+ steps.
 - Effect per step:
   - `knowledge.current_level -= 0.01`
-  - `emotional_maturity.current_level -= 0.015`
+  - `emotional_maturity.current_level -= 0.010`
 
 ### 4) Regulatory Complexity Scaling
 
@@ -37,6 +37,26 @@ Define structural compounding effects that emerge over multiple decision steps.
 - Effect per step:
   - `legal_exposure.required_level += 0.01` (capped at `0.90`)
   - `knowledge.required_level += 0.005` (capped at `0.85`)
+
+### 5) Risk-Relief Counterbalance
+
+- Trigger:
+  - active step decision is a risk-relief structural decision (`approve-risk-cap-policy`, `establish-legal-safety-baseline`).
+- Effect per step:
+  - `risk.current_level += 0.02`
+  - `legal_exposure.current_level += 0.015`
+- Purpose:
+  - prevent compounding model from over-penalizing risk when explicit risk-relief decisions are selected.
+
+### 6) Stability Recovery Counterbalance
+
+- Trigger:
+  - active step decision is `define-income-stability-strategy` or `build-financial-buffer-policy`.
+- Effect per step:
+  - `risk.current_level += 0.015`
+  - `money.current_level += 0.01`
+- Purpose:
+  - reflect medium-term stabilization effects so risk does not remain artificially degraded after valid relief moves.
 
 ## Safety Rules
 

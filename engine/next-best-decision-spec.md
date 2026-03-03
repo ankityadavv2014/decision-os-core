@@ -37,6 +37,8 @@ All candidate evaluation and ordering must follow this exact sequence:
      - `knowledge`
      - `cognitive_load`
      - `emotional_maturity`
+   - risk-trend override:
+     - if `risk_exposure_trend` is `degrading` for 2 or more consecutive steps, candidate ordering must prioritize eligible decisions that improve risk trend before money/time relief, unless blocked by legal hard block.
 
 5. **Optionality impact**
    - compute projected optionality using `progression/optionality-model.md`.
@@ -67,6 +69,9 @@ These rules prevent unsafe unlock behavior:
 - no `identity-locking` node may be selected while any unresolved legal hard block exists.
 - no node with `irreversibility_score >= 0.80` may be selected when `emotional_stability < 0.72` or confidence `< 0.75`.
 - if the same `next_decision_id` is selected for 3 consecutive steps, force a constraint-relief pivot to the highest-priority unresolved deficit category (if any non-hard candidate exists).
+- equivalent-loop guard:
+  - if selection cycles among a small repeated root-safe set (<=2 unique decisions over 4 consecutive steps), force pivot to highest-severity unresolved constraint class that is improvable by at least one eligible candidate.
+  - pivot candidate must be outside the active loop set when such candidate exists.
 
 ## Output Contract
 
@@ -86,3 +91,4 @@ Engine returns:
 - Heuristic weight stacking is disallowed; only rule-ordered deterministic selection is valid.
 - Engine must avoid repeated same-decision loops across adjacent progression steps.
 - Engine must fail-safe to a non-null `learn-only` candidate when repeatability cooldown is the only blocker.
+- Fallback safety: if fallback repeats exceed deadlock-signature threshold in projection window, classify as design flaw and escalate to pivot mode.

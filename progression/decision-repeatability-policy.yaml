@@ -5,6 +5,11 @@ policy:
   default_repeatability: non-repeatable
   short_window_steps: 3
   null_prevention_fallback: allow-lowest-irreversibility-learn-only
+  equivalent_loop_window_steps: 3
+  equivalent_loop_unique_node_threshold: 2
+  fallback_max_triggers_in_projection: 2
+  deadlock_signature_action: escalate-constraint-pivot
+  loop_pivot_requires_out_of_loop_candidate: true
 
 repeatable_decisions:
   - design-operating-system-routines
@@ -14,6 +19,14 @@ repeatability_constraints:
   - decision_id: validate-core-contract-literacy
     min_steps_between_repeats: 2
     requires_unresolved_deficit_category: knowledge
+    improvable_categories:
+      - knowledge
+      - legal_exposure
+      - risk
   - decision_id: design-operating-system-routines
     min_steps_between_repeats: 2
     requires_unresolved_deficit_category: time
+    improvable_categories:
+      - time
+      - cognitive_load
+      - emotional_maturity

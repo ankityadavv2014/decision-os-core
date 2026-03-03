@@ -446,3 +446,72 @@ Use this template for every update:
   - Rationale: capture temporal modeling learnings and drift outcomes.
   - Impact: preserves longitudinal evolution trail.
   - Migration Notes: maintain one learning record per progression cycle.
+
+## [0.6.0] - 2026-03-02
+### Changed
+- Artifact: `engine/next-best-decision-spec.md`
+  - Change Class: `threshold-tuning`
+  - Rationale: enforce risk-trend precedence override and stronger equivalent-loop pivot constraints.
+  - Impact: reduces drift under prolonged degradation while preserving deterministic ordering.
+  - Migration Notes: apply risk-trend override only when degradation streak threshold is met.
+
+- Artifact: `progression/decision-repeatability-policy.yaml`
+  - Change Class: `threshold-tuning`
+  - Rationale: add equivalent-loop window controls and deadlock-signature escalation settings.
+  - Impact: fallback behavior is less likely to mask structural deadlocks.
+  - Migration Notes: keep fallback threshold and escalation action aligned with projection horizon.
+
+- Artifact: `constraints/constraint-compounding-model.md`
+  - Change Class: `threshold-tuning`
+  - Rationale: calibrate compounding penalties and add stability recovery counterbalance for risk-relief decisions.
+  - Impact: lowers persistent risk concentration artifacts in forward projections.
+  - Migration Notes: validate compounding tweaks with before/after projection evidence.
+
+- Artifact: `graph/universal-decision-nodes.yaml`
+  - Change Class: `threshold-tuning`
+  - Rationale: convert selected critical hard-block thresholds to simulation-first gates where progression path should remain available.
+  - Impact: high-friction profiles preserve safe learn-only progression rather than collapsing into repetitive dead paths.
+  - Migration Notes: preserve hard blocks for critical floor breaches only.
+
+### Added
+- Artifact: `engine/cycle-006-risk-trend-precedence.md`
+  - Change Class: `non-breaking-doc`
+  - Rationale: document deterministic precedence tightening for degrading risk trend cases.
+  - Impact: makes risk-relief override behavior explicit and auditable.
+  - Migration Notes: reference this doc when modifying precedence layers.
+
+- Artifact: `simulation/cycle-006-risk-concentration-root-causes.md`
+  - Change Class: `non-breaking-doc`
+  - Rationale: record compact root-cause analysis for concentration profiles.
+  - Impact: links drift observations to structural fixes.
+  - Migration Notes: update table each drift-reduction cycle.
+
+- Artifact: `simulation/cycle-006-deadlock-signature.md`
+  - Change Class: `non-breaking-doc`
+  - Rationale: define and audit fallback-masked deadlock signature behavior.
+  - Impact: introduces explicit guard against hidden deadlocks.
+  - Migration Notes: include signature counts in future projection reports.
+
+- Artifact: `simulation/cycle-006-forward-projection.md`
+  - Change Class: `non-breaking-doc`
+  - Rationale: capture baseline-vs-post projection outcomes for drift-reduction pass.
+  - Impact: provides evidence for concentration and loop reductions.
+  - Migration Notes: keep same profile set for comparability.
+
+- Artifact: `simulation/cycle-006-determinism-regression.md`
+  - Change Class: `non-breaking-doc`
+  - Rationale: verify determinism preservation after drift fixes.
+  - Impact: confirms no order-based nondeterminism introduced.
+  - Migration Notes: run with shuffled candidate order each cycle.
+
+- Artifact: `reports/stability-cycle-006.md`
+  - Change Class: `non-breaking-doc`
+  - Rationale: publish cycle-level baseline/post drift deltas and recommendation.
+  - Impact: provides hardening readiness signal for next phase.
+  - Migration Notes: include baseline comparison table each cycle.
+
+- Artifact: `learnings/2026-03-02-cycle-006-drift-reduction.md`
+  - Change Class: `non-breaking-doc`
+  - Rationale: record assumptions, fixes, and measured outcomes from drift pass.
+  - Impact: preserves traceable learning continuity.
+  - Migration Notes: maintain one learning file per cycle.
