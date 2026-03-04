@@ -32,6 +32,10 @@ It does not execute actions, integrate platforms, or define UI behavior.
 - Decision intelligence determines whether a decision is blocked, simulation-only, or execute-eligible.
 - Execution systems consume this output but are out of scope for this repository.
 
+## How To Test
+
+- CLI: `python3 tools/runner/audit --suite simulation/regression-suite.yaml` | UI: `cd ui-sandbox && npm install && npm run dev`
+
 ## Internal Agentic Mode Policy
 
 Agents are internal workers that can validate and test, never govern.

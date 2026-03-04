@@ -216,12 +216,15 @@ def _evaluate_node(
     # Approximation: optionality rises with satisfied requirements and lower irreversibility.
     optionality_delta = _round((readiness_ratio - 0.5) * 0.2 + (0.5 - irreversibility) * 0.08 + gate_adjustment)
 
-    risk_constraint = constraints.get("risk", {})
-    risk_trend = str(risk_constraint.get("trend", "stable"))
-    risk_trend_flag = {
-        "degrading": "risk-up",
-        "improving": "risk-down",
-    }.get(risk_trend, "risk-flat")
+    risk_delta = constraint_deltas.get("risk", {}).get("level_delta")
+    if risk_delta is None:
+        risk_trend_flag = "risk-flat"
+    elif risk_delta < 0:
+        risk_trend_flag = "risk-up"
+    elif risk_delta > 0:
+        risk_trend_flag = "risk-down"
+    else:
+        risk_trend_flag = "risk-flat"
     loop_detected = len(prior_decisions) >= 2 and all(
         p == decision_id for p in prior_decisions[-2:]
     )
@@ -259,7 +262,29 @@ def choose_decision(profile: Dict[str, Any], prior_decisions: Optional[List[str]
             ev.decision_id,
         )
 
-    return sorted(evaluations, key=sort_key)[0]
+    ranked = sorted(evaluations, key=sort_key)
+    selected = ranked[0]
+
+    # Deterministic anti-loop guard: avoid immediate repeats when an equivalent non-blocked option exists.
+    if prior_decisions:
+        alternatives = [
+            ev
+            for ev in ranked
+            if ev.gating_reason != "blocked" and ev.decision_id != prior_decisions[-1]
+        ]
+        if selected.decision_id == prior_decisions[-1] and alternatives:
+            selected = alternatives[0]
+
+    # Stronger pivot if the same decision appears in the last two steps.
+    if len(prior_decisions) >= 2 and len(set(prior_decisions[-2:])) == 1:
+        loop_set = set(prior_decisions[-2:])
+        alternatives = [
+            ev for ev in ranked if ev.gating_reason != "blocked" and ev.decision_id not in loop_set
+        ]
+        if alternatives:
+            selected = alternatives[0]
+
+    return selected
 
 
 def _apply_projection_update(profile: Dict[str, Any], chosen: NodeEvaluation) -> Dict[str, Any]:
@@ -279,6 +304,14 @@ def _apply_projection_update(profile: Dict[str, Any], chosen: NodeEvaluation) ->
         constraint = constraints[category]
         constraint["current_level"] = _round(min(1.0, max(0.0, float(constraint.get("current_level", 0.0)) + boost[0])))
         constraint["confidence"] = _round(min(1.0, max(0.0, float(constraint.get("confidence", 0.0)) + boost[1])))
+        required = float(constraint.get("required_level", 0.0))
+        current = float(constraint.get("current_level", 0.0))
+        if current + 0.01 < required:
+            constraint["trend"] = "degrading"
+        elif current >= required:
+            constraint["trend"] = "improving"
+        else:
+            constraint["trend"] = "stable"
     return updated
 
 
@@ -337,9 +370,21 @@ def _suite_cases(raw_suite: Any) -> List[Dict[str, Any]]:
         maybe_cases = raw_suite.get("cases")
         if isinstance(maybe_cases, list):
             return maybe_cases
+        maybe_profiles = raw_suite.get("profiles")
+        if isinstance(maybe_profiles, list):
+            normalized_cases: List[Dict[str, Any]] = []
+            for item in maybe_profiles:
+                if not isinstance(item, dict):
+                    continue
+                profile_id = item.get("profile_id")
+                if not profile_id:
+                    continue
+                normalized_cases.append({"profile_id": profile_id, "command": "run-nba"})
+            if normalized_cases:
+                return normalized_cases
     if isinstance(raw_suite, list):
         return raw_suite
-    raise ValueError("Suite YAML must be either a list or a mapping with `cases`")
+    raise ValueError("Suite YAML must be either a list or a mapping with `cases` or `profiles`")
 
 
 def audit_command(suite_ref: str) -> int:

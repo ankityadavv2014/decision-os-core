@@ -1,0 +1,16 @@
+{
+  "suite_id": "ws1-regression-freeze",
+  "fixed_n": 10,
+  "profile_ids": [
+    "fast-scaling-founder",
+    "risk-seeking-serial-operator",
+    "conservative-saver",
+    "compliance-heavy-operator",
+    "over-leveraged-growth-seeker",
+    "high-income-zero-knowledge",
+    "high-knowledge-zero-time",
+    "high-risk-tolerance-no-capital",
+    "compliance-strong-time-fragile",
+    "recovery-mode-legal-risk-low"
+  ]
+}

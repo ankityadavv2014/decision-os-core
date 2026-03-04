@@ -635,3 +635,114 @@ Use this template for every update:
   - Rationale: capture meta-layer additions, stop-event recovery, and final outcomes.
   - Impact: preserves learning continuity for strategy-layer evolution.
   - Migration Notes: maintain one learning record per cycle.
+
+## [0.10.0] - 2026-03-04
+### Changed
+- Artifact: `README.md`
+  - Change Class: `non-breaking-doc`
+  - Rationale: add canonical one-line local test commands for CLI audit and UI sandbox.
+  - Impact: cycle verification is faster and consistent for operators.
+  - Migration Notes: keep command examples aligned with runner/UI entrypoints.
+
+- Artifact: `tools/runner/core.py`
+  - Change Class: `threshold-tuning`
+  - Rationale: align suite parser with frozen regression format and harden deterministic projection against repeat loops/drift artifacts.
+  - Impact: integrated frozen-suite audit now executes and passes required gates.
+  - Migration Notes: keep runner deterministic ordering and anti-loop behavior stable across future edits.
+
+- Artifact: `ui-sandbox/src/lib/dataLoader.js`
+  - Change Class: `threshold-tuning`
+  - Rationale: bind UI profile selector to frozen regression-suite IDs rather than unconstrained profile list.
+  - Impact: UI diagnostics now evaluate the same canonical denominator as regression gates.
+  - Migration Notes: update `public/data/regression-suite.json` whenever suite composition changes.
+
+### Added
+- Artifact: `governance/cycle-gates.md`
+  - Change Class: `non-breaking-doc`
+  - Rationale: codify hard pass/fail release gates for frozen denominator auditing.
+  - Impact: cycle certification is now objective and repeatable.
+  - Migration Notes: keep denominator policy explicit as `X/N`.
+
+- Artifact: `simulation/regression-suite.yaml`
+  - Change Class: `non-breaking-doc`
+  - Rationale: freeze regression denominator and profile composition for consistent certification.
+  - Impact: prevents denominator drift across cycles.
+  - Migration Notes: profile changes require governance update.
+
+- Artifact: `simulation/regression-report-spec.md`
+  - Change Class: `non-breaking-doc`
+  - Rationale: standardize required regression outputs and delta tables.
+  - Impact: audit artifacts are comparable cycle-over-cycle.
+  - Migration Notes: enforce explicit skip accounting.
+
+- Artifact: `simulation/cycle-008-regression-replay.md`
+  - Change Class: `non-breaking-doc`
+  - Rationale: replay Cycle 008 results against frozen suite baseline.
+  - Impact: preserves backward comparability for certified runs.
+  - Migration Notes: rerun when cycle assumptions change.
+
+- Artifact: `simulation/cycle-009-regression-run.md`
+  - Change Class: `non-breaking-doc`
+  - Rationale: record cycle-009 availability status with explicit denominator-safe skip semantics.
+  - Impact: avoids silent denominator drift.
+  - Migration Notes: replace skips with executed evidence once cycle-009 run is available.
+
+- Artifact: `reports/certification.md`
+  - Change Class: `non-breaking-doc`
+  - Rationale: define Certified/Release Candidate/Stable Release policy with consecutive-cycle rule.
+  - Impact: release state transitions are governed by explicit gate logic.
+  - Migration Notes: keep criteria synced with governance gates.
+
+- Artifact: `tools/README.md`
+  - Change Class: `non-breaking-doc`
+  - Rationale: document runner usage and expected outputs.
+  - Impact: lowers activation cost for local audits.
+  - Migration Notes: update examples whenever CLI args change.
+
+- Artifact: `tools/runner/run-nba`
+  - Change Class: `non-breaking-doc`
+  - Rationale: add CLI entrypoint for single-step NBA inspection.
+  - Impact: enables deterministic local checks from shell.
+  - Migration Notes: keep executable and python entry wiring intact.
+
+- Artifact: `tools/runner/project`
+  - Change Class: `non-breaking-doc`
+  - Rationale: add CLI entrypoint for multi-step projections.
+  - Impact: drift behavior can be audited with fixed step horizons.
+  - Migration Notes: preserve max-step guardrails in tooling.
+
+- Artifact: `tools/runner/audit`
+  - Change Class: `non-breaking-doc`
+  - Rationale: add suite-wide audit command for regression freeze enforcement.
+  - Impact: enables gate checks with single command.
+  - Migration Notes: maintain compatibility with frozen suite schema.
+
+- Artifact: `tools/runner/self-check-suite.yaml`
+  - Change Class: `non-breaking-doc`
+  - Rationale: provide deterministic self-check fixture for runner integrity.
+  - Impact: supports quick sanity validation before full audits.
+  - Migration Notes: keep lightweight and stable.
+
+- Artifact: `ui-sandbox/*`
+  - Change Class: `non-breaking-doc`
+  - Rationale: add minimal diagnostic web sandbox for profile/decision/projection/graph inspection.
+  - Impact: improves operator visibility without introducing product surface area.
+  - Migration Notes: no backend/auth/db; keep data local.
+
+- Artifact: `ui-sandbox/public/data/regression-suite.json`
+  - Change Class: `non-breaking-doc`
+  - Rationale: expose frozen suite IDs to UI loader for denominator-consistent selection.
+  - Impact: UI profile list now aligns with governance suite.
+  - Migration Notes: regenerate when regression suite changes.
+
+- Artifact: `reports/stability-cycle-010.md`
+  - Change Class: `non-breaking-doc`
+  - Rationale: publish integrated cycle gate outcomes and certification status.
+  - Impact: records Cycle 010 as certified release-candidate state.
+  - Migration Notes: produce one stability report per cycle.
+
+- Artifact: `learnings/2026-03-04-cycle-010-parallel-build.md`
+  - Change Class: `non-breaking-doc`
+  - Rationale: log parallel branch coordination outcomes and integration hardening learnings.
+  - Impact: preserves traceability for multi-workstream orchestration.
+  - Migration Notes: maintain one learning artifact per cycle.
