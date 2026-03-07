@@ -1,128 +1,314 @@
+const GATE_RANK = {
+  'execute-eligible': 0,
+  'learn-only': 1,
+  blocked: 2,
+}
+
+const round3 = (value) => Math.round(Number(value) * 1000) / 1000
+
 const parseExpression = (expression) => {
-  const match = expression.match(/^([a-z_]+)\.(current_level|confidence)\s*<\s*([0-9.]+)$/i)
+  const match = (expression || '')
+    .trim()
+    .match(/^([a-z_]\w*)\.(current_level|confidence|evidence_age_days)\s*(<=|>=|<|>)\s*(-?\d+(?:\.\d+)?)$/i)
   if (!match) return null
   return {
     category: match[1],
     field: match[2],
-    threshold: Number(match[3]),
+    op: match[3],
+    threshold: Number(match[4]),
   }
 }
 
-const evaluateHardBlock = (profile, rule) => {
-  const parsed = parseExpression(rule.expression || '')
-  if (!parsed) return false
-  const category = profile.constraints[parsed.category]
-  if (!category) return false
-  return category[parsed.field] < parsed.threshold
+const evaluateExpression = (expression, constraints) => {
+  const parsed = parseExpression(expression)
+  if (!parsed) return null
+  const category = constraints[parsed.category]
+  if (!category) return null
+  const lhs = Number(category[parsed.field] ?? 0)
+  const rhs = Number(parsed.threshold)
+  if (parsed.op === '<') return lhs < rhs
+  if (parsed.op === '>') return lhs > rhs
+  if (parsed.op === '<=') return lhs <= rhs
+  if (parsed.op === '>=') return lhs >= rhs
+  return null
 }
 
-const evaluateNode = (profile, node) => {
-  const evidenceGaps = []
-  const blockingReasons = []
-  const ruleRefs = []
-
-  node.constraints_required.forEach((requirement) => {
-    const constraint = profile.constraints[requirement.category]
-    if (!constraint) {
-      evidenceGaps.push(`missing ${requirement.category} evidence`)
-      return
+const computeConstraintDeltas = (node, constraints) => {
+  const deltas = {}
+  let unmet = 0
+  const required = [...(node.constraints_required || [])].sort((a, b) =>
+    String(a.category || '').localeCompare(String(b.category || '')),
+  )
+  required.forEach((req) => {
+    const category = req.category
+    if (!category) return
+    const current = constraints[category] || {}
+    const levelDelta = round3(Number(current.current_level || 0) - Number(req.min_required_level || 0))
+    const confDelta = round3(Number(current.confidence || 0) - Number(req.confidence_min || 0))
+    const freshnessDelta = round3(
+      Number(req.evidence_freshness_days_max ?? 999999) - Number(current.evidence_age_days || 0),
+    )
+    deltas[category] = {
+      level_delta: levelDelta,
+      confidence_delta: confDelta,
+      freshness_delta: freshnessDelta,
     }
-
-    if (constraint.current_level < requirement.min_required_level) {
-      blockingReasons.push(
-        `${requirement.category} level ${constraint.current_level.toFixed(2)} < ${requirement.min_required_level.toFixed(2)}`,
-      )
-      ruleRefs.push(`readiness:${requirement.category}:level`)
-    }
-    if (
-      typeof requirement.confidence_min === 'number' &&
-      constraint.confidence < requirement.confidence_min
-    ) {
-      blockingReasons.push(
-        `${requirement.category} confidence ${constraint.confidence.toFixed(2)} < ${requirement.confidence_min.toFixed(2)}`,
-      )
-      ruleRefs.push(`readiness:${requirement.category}:confidence`)
-    }
-    if (
-      typeof requirement.evidence_freshness_days_max === 'number' &&
-      constraint.evidence_age_days > requirement.evidence_freshness_days_max
-    ) {
-      blockingReasons.push(
-        `${requirement.category} evidence age ${constraint.evidence_age_days}d > ${requirement.evidence_freshness_days_max}d`,
-      )
-      ruleRefs.push(`readiness:${requirement.category}:freshness`)
+    if (levelDelta < 0 || confDelta < 0 || freshnessDelta < 0) {
+      unmet += 1
     }
   })
+  return { deltas, unmet }
+}
 
-  const unmetPrereqs = node.prerequisites.filter((p) => !p.satisfied)
-  if (unmetPrereqs.length > 0) {
-    blockingReasons.push(`unmet prerequisites: ${unmetPrereqs.map((p) => p.prerequisite_id).join(', ')}`)
-    ruleRefs.push('preconditions:prerequisites')
-  }
-
-  const hardBlocks = node.blocked_when.filter((rule) => evaluateHardBlock(profile, rule))
-  if (hardBlocks.length > 0) {
-    hardBlocks.forEach((rule) => {
-      blockingReasons.push(rule.reason || `hard block: ${rule.condition_id}`)
-      ruleRefs.push(`safety:${rule.condition_id}`)
+const evaluateNode = (profile, node, priorDecisions) => {
+  const constraints = profile.constraints || {}
+  const hardHits = []
+  ;[...(node.blocked_when || [])]
+    .sort((a, b) => String(a.condition_id || '').localeCompare(String(b.condition_id || '')))
+    .forEach((cond) => {
+      if (evaluateExpression(cond.expression, constraints)) {
+        hardHits.push(String(cond.reason || cond.condition_id || 'blocked-condition'))
+      }
     })
-    return {
-      ...node,
-      status: 'ineligible-hard-block',
-      blocking_reasons: blockingReasons,
-      evidence_gaps: evidenceGaps,
-      rule_refs: ruleRefs,
+
+  const simulationHits = []
+  ;[...(node.simulation_only_conditions || [])]
+    .sort((a, b) => String(a.condition_id || '').localeCompare(String(b.condition_id || '')))
+    .forEach((cond) => {
+      if (evaluateExpression(cond.expression, constraints)) {
+        simulationHits.push(String(cond.reason || cond.condition_id || 'simulation-condition'))
+      }
+    })
+
+  const { deltas, unmet } = computeConstraintDeltas(node, constraints)
+  let gatingReason = 'execute-eligible'
+  let gatingDetails = ['all required constraints satisfy execution thresholds']
+
+  if (hardHits.length > 0) {
+    gatingReason = 'blocked'
+    gatingDetails = [...hardHits].sort()
+  } else if (unmet > 0 || simulationHits.length > 0) {
+    gatingReason = 'learn-only'
+    gatingDetails = [...simulationHits].sort()
+    if (unmet > 0) {
+      gatingDetails.push(`${unmet} required constraint(s) below execute threshold`)
     }
   }
 
-  const status = blockingReasons.length > 0 ? 'eligible-learn-only' : 'eligible-execute'
+  const reqCount = Math.max(1, Object.keys(deltas).length)
+  const reqMet = reqCount - unmet
+  const readinessRatio = reqMet / reqCount
+  const irreversibility = Number(node.irreversibility_score || 0.5)
+  const gateAdjustment = gatingReason === 'execute-eligible' ? 0.04 : gatingReason === 'learn-only' ? 0 : -0.04
+  const optionalityDelta = round3((readinessRatio - 0.5) * 0.2 + (0.5 - irreversibility) * 0.08 + gateAdjustment)
+
+  const riskDelta = deltas.risk?.level_delta
+  const riskTrend =
+    riskDelta === undefined ? 'risk-flat' : riskDelta < 0 ? 'risk-up' : riskDelta > 0 ? 'risk-down' : 'risk-flat'
+
   return {
-    ...node,
-    status,
-    blocking_reasons: blockingReasons,
-    evidence_gaps: evidenceGaps,
-    rule_refs: ruleRefs,
+    decision_id: String(node.decision_id || 'unknown-decision'),
+    irreversibility_score: irreversibility,
+    gating_reason: gatingReason,
+    gating_details: gatingDetails,
+    constraint_deltas: deltas,
+    optionality_delta: optionalityDelta,
+    drift_flags: {
+      risk_trend: riskTrend,
+      loop_detected:
+        priorDecisions.length >= 2 &&
+        priorDecisions[priorDecisions.length - 1] === node.decision_id &&
+        priorDecisions[priorDecisions.length - 2] === node.decision_id,
+    },
   }
 }
 
-export const runEvaluator = (profile, nodes) => {
-  const evaluated = nodes.map((node) => evaluateNode(profile, node))
-  const ordered = [...evaluated].sort((a, b) => {
-    if (a.irreversibility_score !== b.irreversibility_score) {
-      return a.irreversibility_score - b.irreversibility_score
-    }
-    return a.decision_id.localeCompare(b.decision_id)
+const scoreDeficit = (evaluation) => {
+  return Object.values(evaluation.constraint_deltas || {}).reduce((acc, delta) => {
+    return (
+      acc +
+      Math.abs(Math.min(0, Number(delta.level_delta || 0))) +
+      Math.abs(Math.min(0, Number(delta.confidence_delta || 0))) +
+      Math.abs(Math.min(0, Number(delta.freshness_delta || 0))) / 100
+    )
+  }, 0)
+}
+
+const chooseDecision = (profile, nodes, priorDecisions = []) => {
+  const evaluated = nodes.map((node) => evaluateNode(profile, node, priorDecisions))
+  const ranked = [...evaluated].sort((a, b) => {
+    const aKey = [
+      GATE_RANK[a.gating_reason] ?? 9,
+      round3(scoreDeficit(a)),
+      Number(a.irreversibility_score || 0),
+      a.decision_id,
+    ]
+    const bKey = [
+      GATE_RANK[b.gating_reason] ?? 9,
+      round3(scoreDeficit(b)),
+      Number(b.irreversibility_score || 0),
+      b.decision_id,
+    ]
+    return JSON.stringify(aKey).localeCompare(JSON.stringify(bKey))
   })
 
-  const executeCandidate = ordered.find((node) => node.status === 'eligible-execute')
-  const learnCandidate = ordered.find((node) => node.status === 'eligible-learn-only')
-  const next = executeCandidate || learnCandidate || null
+  let selected = ranked[0]
+  if (!selected) return null
 
+  if (priorDecisions.length > 0) {
+    const alternatives = ranked.filter(
+      (ev) => ev.gating_reason !== 'blocked' && ev.decision_id !== priorDecisions[priorDecisions.length - 1],
+    )
+    if (selected.decision_id === priorDecisions[priorDecisions.length - 1] && alternatives.length > 0) {
+      selected = alternatives[0]
+    }
+  }
+
+  if (priorDecisions.length >= 2 && new Set(priorDecisions.slice(-2)).size === 1) {
+    const loopSet = new Set(priorDecisions.slice(-2))
+    const alternatives = ranked.filter(
+      (ev) => ev.gating_reason !== 'blocked' && !loopSet.has(ev.decision_id),
+    )
+    if (alternatives.length > 0) selected = alternatives[0]
+  }
+
+  return { selected, ranked }
+}
+
+const applyProjectionUpdate = (profile, chosen) => {
+  const updated = JSON.parse(JSON.stringify(profile))
+  const constraints = updated.constraints || {}
+  const boost =
+    chosen.gating_reason === 'execute-eligible'
+      ? [0.03, 0.02]
+      : chosen.gating_reason === 'learn-only'
+        ? [0.02, 0.015]
+        : [-0.01, -0.005]
+
+  Object.keys(constraints)
+    .sort()
+    .forEach((category) => {
+      const entry = constraints[category]
+      entry.evidence_age_days = Math.max(0, Number(entry.evidence_age_days || 0) + 1)
+    })
+
+  Object.keys(chosen.constraint_deltas || {})
+    .sort()
+    .forEach((category) => {
+      if (!constraints[category]) return
+      const entry = constraints[category]
+      entry.current_level = round3(Math.min(1, Math.max(0, Number(entry.current_level || 0) + boost[0])))
+      entry.confidence = round3(Math.min(1, Math.max(0, Number(entry.confidence || 0) + boost[1])))
+      const required = Number(entry.required_level || 0)
+      const current = Number(entry.current_level || 0)
+      if (current + 0.01 < required) entry.trend = 'degrading'
+      else if (current >= required) entry.trend = 'improving'
+      else entry.trend = 'stable'
+    })
+
+  return updated
+}
+
+export const runEvaluator = (profile, nodes, priorDecisions = []) => {
+  const decision = chooseDecision(profile, nodes, priorDecisions)
+  if (!decision) {
+    return {
+      profile_id: profile.profile_id,
+      next_decision_id: null,
+      status: 'learn-only',
+      rationale: 'No candidate available.',
+      blocking_reasons: ['all candidates hard-blocked'],
+      evidence_gaps: [],
+      rule_refs: [],
+      constraint_deltas: {},
+      optionality_delta: 0,
+      drift_flags: { risk_trend: 'risk-flat', loop_detected: false },
+      blocked_candidates: [],
+    }
+  }
+
+  const { selected, ranked } = decision
   return {
     profile_id: profile.profile_id,
-    next_decision_id: next?.decision_id || null,
-    status: next ? (next.status === 'eligible-execute' ? 'execute-eligible' : 'learn-only') : 'learn-only',
-    rationale: next
-      ? `Selected by deterministic irreversibility ordering after readiness/safety checks (${next.irreversibility_score.toFixed(2)}).`
-      : 'No candidate available.',
-    blocking_reasons: next?.blocking_reasons || ['all candidates hard-blocked'],
-    evidence_gaps: next?.evidence_gaps || [],
-    rule_refs: next?.rule_refs || [],
-    blocked_candidates: ordered
-      .filter((node) => node.status !== 'eligible-execute')
+    next_decision_id: selected.decision_id,
+    status: selected.gating_reason === 'execute-eligible' ? 'execute-eligible' : 'learn-only',
+    rationale: `Selected by deterministic ordering (${selected.irreversibility_score.toFixed(2)}).`,
+    blocking_reasons: selected.gating_details,
+    evidence_gaps: [],
+    rule_refs: ['runner-parity:v1'],
+    constraint_deltas: selected.constraint_deltas,
+    optionality_delta: selected.optionality_delta,
+    drift_flags: selected.drift_flags,
+    blocked_candidates: ranked
+      .filter((node) => node.gating_reason !== 'execute-eligible')
       .slice(0, 6)
       .map((node) => ({
         decision_id: node.decision_id,
-        status: node.status,
-        reason: node.blocking_reasons[0] || 'not execute-eligible',
+        status:
+          node.gating_reason === 'blocked'
+            ? 'ineligible-hard-block'
+            : node.gating_reason === 'learn-only'
+              ? 'eligible-learn-only'
+              : 'eligible-execute',
+        reason: node.gating_details[0] || 'not execute-eligible',
       })),
   }
 }
 
 export const runProjection = (profile, nodes, steps) => {
   const cappedSteps = Math.min(Math.max(steps, 1), 5)
-  return Array.from({ length: cappedSteps }, (_, idx) => ({
-    step: idx + 1,
-    ...runEvaluator(profile, nodes),
-  }))
+  const history = []
+  let state = JSON.parse(JSON.stringify(profile))
+  const priorDecisions = []
+
+  for (let index = 0; index < cappedSteps; index += 1) {
+    const decision = chooseDecision(state, nodes, priorDecisions)
+    if (!decision) {
+      history.push({
+        step: index + 1,
+        profile_id: profile.profile_id,
+        next_decision_id: null,
+        status: 'learn-only',
+        rationale: 'No candidate available.',
+        blocking_reasons: ['all candidates hard-blocked'],
+        evidence_gaps: [],
+        rule_refs: [],
+        constraint_deltas: {},
+        optionality_delta: 0,
+        drift_flags: { risk_trend: 'risk-flat', loop_detected: false },
+        blocked_candidates: [],
+      })
+      continue
+    }
+    const { selected, ranked } = decision
+    history.push({
+      step: index + 1,
+      profile_id: profile.profile_id,
+      next_decision_id: selected.decision_id,
+      status: selected.gating_reason === 'execute-eligible' ? 'execute-eligible' : 'learn-only',
+      rationale: `Selected by deterministic ordering (${selected.irreversibility_score.toFixed(2)}).`,
+      blocking_reasons: selected.gating_details,
+      evidence_gaps: [],
+      rule_refs: ['runner-parity:v1'],
+      constraint_deltas: selected.constraint_deltas,
+      optionality_delta: selected.optionality_delta,
+      drift_flags: selected.drift_flags,
+      blocked_candidates: ranked
+        .filter((node) => node.gating_reason !== 'execute-eligible')
+        .slice(0, 6)
+        .map((node) => ({
+          decision_id: node.decision_id,
+          status:
+            node.gating_reason === 'blocked'
+              ? 'ineligible-hard-block'
+              : node.gating_reason === 'learn-only'
+                ? 'eligible-learn-only'
+                : 'eligible-execute',
+          reason: node.gating_details[0] || 'not execute-eligible',
+        })),
+    })
+    priorDecisions.push(selected.decision_id)
+    state = applyProjectionUpdate(state, selected)
+  }
+  return history
 }

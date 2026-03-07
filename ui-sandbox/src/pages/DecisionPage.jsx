@@ -23,6 +23,9 @@ export function DecisionPage({ run, selectedProfile }) {
         <p>
           <strong>rationale:</strong> {run.rationale}
         </p>
+        <p>
+          <strong>optionality_delta:</strong> {run.optionality_delta}
+        </p>
       </div>
 
       <div className="card-grid">

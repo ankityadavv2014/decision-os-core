@@ -38,6 +38,9 @@ export function ProjectionPage({ steps, setSteps, run, selectedProfile, onRunPro
               <p>
                 <strong>blocked:</strong> {stepResult.blocking_reasons[0]}
               </p>
+              <p>
+                <strong>optionality_delta:</strong> {stepResult.optionality_delta}
+              </p>
             </article>
           ))}
         </div>

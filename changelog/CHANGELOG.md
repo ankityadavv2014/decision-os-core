@@ -746,3 +746,84 @@ Use this template for every update:
   - Rationale: log parallel branch coordination outcomes and integration hardening learnings.
   - Impact: preserves traceability for multi-workstream orchestration.
   - Migration Notes: maintain one learning artifact per cycle.
+
+## [0.11.0] - 2026-03-07
+### Changed
+- Artifact: `tools/runner/core.py`
+  - Change Class: `threshold-tuning`
+  - Rationale: harden deterministic runner behavior for certification replay and suite schema compatibility.
+  - Impact: runner audit/projection now aligns with frozen-suite certification gates.
+  - Migration Notes: keep `profiles`-shape suite support and anti-loop deterministic ordering behavior.
+
+- Artifact: `ui-sandbox/src/lib/evaluator.js`
+  - Change Class: `threshold-tuning`
+  - Rationale: align sandbox evaluator with runner outputs for decision/status/optionality/projection parity.
+  - Impact: UI diagnostics now reflect canonical runner behavior instead of diverging local logic.
+  - Migration Notes: preserve parity checks before changing evaluator behavior.
+
+- Artifact: `ui-sandbox/src/lib/dataLoader.js`
+  - Change Class: `threshold-tuning`
+  - Rationale: lock UI profile loading to regression-suite-aligned local dataset.
+  - Impact: sandbox testing now uses frozen denominator profile set.
+  - Migration Notes: update `regression-profiles.json` when regression-suite membership changes.
+
+- Artifact: `ui-sandbox/src/pages/DecisionPage.jsx`
+  - Change Class: `non-breaking-doc`
+  - Rationale: expose optionality delta in decision diagnostics.
+  - Impact: parity-visible metric now available in UI output.
+  - Migration Notes: keep display synced with evaluator output contract.
+
+- Artifact: `ui-sandbox/src/pages/ProjectionPage.jsx`
+  - Change Class: `non-breaking-doc`
+  - Rationale: expose optionality delta in projection diagnostics.
+  - Impact: step-by-step parity checks are easier to inspect in UI.
+  - Migration Notes: maintain projection field parity with runner.
+
+- Artifact: `reports/certification.md`
+  - Change Class: `non-breaking-doc`
+  - Rationale: record cycle-010/011 consecutive certification status and Stable Release Candidate transition.
+  - Impact: release state is now explicitly auditable in-policy.
+  - Migration Notes: append cycle ledger rows every certification cycle.
+
+### Added
+- Artifact: `simulation/cycle-011-regression-run.md`
+  - Change Class: `non-breaking-doc`
+  - Rationale: record frozen-suite gate replay for cycle 011.
+  - Impact: provides auditable certification baseline for this cycle.
+  - Migration Notes: keep all metrics in `X/N` form.
+
+- Artifact: `simulation/cycle-011-forward-projection.md`
+  - Change Class: `non-breaking-doc`
+  - Rationale: capture 5-step projection replay outcomes for all frozen-suite profiles.
+  - Impact: confirms no drift regressions in certification cycle.
+  - Migration Notes: preserve horizon and denominator for comparability.
+
+- Artifact: `tools/runner/parity-validation-cycle-011.md`
+  - Change Class: `non-breaking-doc`
+  - Rationale: document runner vs engine parity checks for all regression profiles.
+  - Impact: certifies CLI output consistency with engine evaluator behavior.
+  - Migration Notes: regenerate every certification cycle.
+
+- Artifact: `ui-sandbox/parity-validation-cycle-011.md`
+  - Change Class: `non-breaking-doc`
+  - Rationale: document UI evaluator parity against CLI runner across decision/projection outputs.
+  - Impact: certifies sandbox as diagnostic mirror, not independent logic source.
+  - Migration Notes: rerun after any UI evaluator or data-loader changes.
+
+- Artifact: `ui-sandbox/public/data/regression-profiles.json`
+  - Change Class: `non-breaking-doc`
+  - Rationale: provide local frozen-suite-aligned profile dataset for parity-safe UI execution.
+  - Impact: removes profile-set mismatch between UI and certification suite.
+  - Migration Notes: keep synchronized with regression-suite sources.
+
+- Artifact: `reports/stability-cycle-011.md`
+  - Change Class: `non-breaking-doc`
+  - Rationale: publish cycle-level gate/parity outcomes and certification state.
+  - Impact: establishes second consecutive certified cycle evidence.
+  - Migration Notes: produce one stability report per cycle.
+
+- Artifact: `learnings/2026-03-07-cycle-011-consecutive-certification.md`
+  - Change Class: `non-breaking-doc`
+  - Rationale: capture parity fixes, certification outcomes, and release-state advancement.
+  - Impact: preserves governance traceability for consecutive certification.
+  - Migration Notes: maintain one learning record per cycle.

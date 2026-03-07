@@ -19,7 +19,7 @@ export const useSandboxData = () => {
     let mounted = true
 
     Promise.all([
-      loadJson('/data/profiles.json'),
+      loadJson('/data/regression-profiles.json'),
       loadJson('/data/nodes.json'),
       loadJson('/data/regression-suite.json'),
     ])

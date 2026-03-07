@@ -9,6 +9,7 @@ This policy defines release statuses using the frozen regression suite denominat
 | Certified | cycle passes all hard gates against frozen suite | determinism `10/10`; null NBA `0/10`; backward unlock `0/10`; prerequisite bypass `0/10`; risk concentration `<= 1/10`; loop tendency `<= 1/10`; skipped profiles `0/10` |
 | Release Candidate | cycle is prepared for release review but not yet stable-release eligible | current cycle is Certified, but there are not yet two consecutive Certified cycles |
 | Stable Release | release line is proven stable across consecutive cycles | two consecutive cycles are Certified under the same frozen suite and denominator |
+| Stable Release Candidate | second consecutive certified checkpoint reached and held under frozen suite | current cycle is Certified and immediately previous cycle is Certified under same denominator (`N=10`) |
 
 ## Denominator and Skip Rules
 
@@ -30,3 +31,12 @@ This policy defines release statuses using the frozen regression suite denominat
   - denominator statement (`N=10`)
   - gate summary table
   - skip list (must be `0/10` for Certified)
+
+## Cycle Status Ledger
+
+| Cycle | Determinism | Null NBA | Backward Unlock | Prerequisite Bypass | Risk Concentration | Loop Tendency | Skips | Certification |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Cycle 010 | `10/10` | `0/10` | `0/10` | `0/10` | `0/10` | `0/10` | `0/10` | Certified |
+| Cycle 011 | `10/10` | `0/10` | `0/10` | `0/10` | `0/10` | `0/10` | `0/10` | Certified |
+
+Current release state: **Stable Release Candidate**.
