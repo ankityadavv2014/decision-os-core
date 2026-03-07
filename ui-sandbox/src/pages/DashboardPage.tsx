@@ -1,5 +1,6 @@
 import { ConstraintMeter } from '../components/ConstraintMeter'
 import { OptionalityGauge } from '../components/OptionalityGauge'
+import { buildActionPlan } from '../lib/actionItems'
 
 type DashboardPageProps = {
   profile: any
@@ -18,10 +19,34 @@ export function DashboardPage({ profile, run }: DashboardPageProps) {
   const totalCount = Object.keys(constraints).length || 1
   const readinessRatio = readinessCount / totalCount
   const risk = constraints.risk?.current_level ?? 0
+  const plan = run ? buildActionPlan(profile, run) : null
 
   return (
     <section>
       <h2>Dashboard</h2>
+      {plan && (
+        <article className="card">
+          <h3>What You Should Do Now</h3>
+          <p>
+            <strong>Priority:</strong> {plan.headline}
+          </p>
+          <p>
+            <strong>Why:</strong> {plan.why}
+          </p>
+          <h4>This week checklist</h4>
+          <ol>
+            {plan.thisWeek.map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ol>
+          <h4>Avoid for now</h4>
+          <ul>
+            {plan.avoid.map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
+        </article>
+      )}
       <div className="card-grid">
         <article className="card">
           <h3>Current User State</h3>
